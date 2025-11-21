@@ -1,0 +1,9 @@
+.hq {
+  &-window {
+    border: 1px solid var(--window-primary-border);
+    border-radius: var(--radius-md);
+    background: var(--window-primary-bg);
+    min-height: 5rem; // 80px
+    min-width: 15rem; // 240px
+  }
+}

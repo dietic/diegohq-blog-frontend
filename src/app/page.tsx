@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { vt323 } from './fonts';
-import { Button } from '@/components/ui/8bit/button';
 
 export default function Home() {
   return (
@@ -13,8 +12,6 @@ export default function Home() {
         height={200}
         className="-mb-20"
       />
-      <Button size="lg">Login</Button>
-      <Button size="lg">Sign up</Button>
       <div
         className={`border-2 border-[#3F3F3F] text-primary-foreground px-4 py-2 ${vt323.className}`}
       >
