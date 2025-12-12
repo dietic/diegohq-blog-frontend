@@ -7,12 +7,12 @@ This document serves as the "source of truth" for all development on the **Diego
 ## 1. Tech Stack & Versioning
 
 - **Frontend:** Next.js 16+ (App Router).
-- **Content CMS:** Keystatic (Git-based, Markdown).
+- **Content CMS:** Payload CMS 3.0+ (Next.js Native).
 - **Game Backend:** Python FastAPI (External API).
 - **Language:** TypeScript (Strict Mode).
 - **Library:** React 19+ (Functional Components only).
 - **Window Management:** `react-rnd`.
-- **Styling:** SCSS Modules (`.module.scss`) or SCSS with BEM naming.
+- **Styling:** Plain SCSS (No CSS Modules, No Tailwind). Global scope with BEM naming convention recommended.
 - **Testing:** Vitest (Unit) + Storybook (Component Isolation).
 - **Package Manager:** `pnpm`.
 
@@ -28,7 +28,7 @@ All components must be self-contained in their own directory within `src/compone
 src/components/
 └── Window/
     ├── Window.tsx          # Component Logic
-    ├── Window.module.scss  # Component Styling (Scoped)
+    ├── Window.scss         # Component Styling (Global Standard)
     ├── Window.stories.tsx  # Storybook Documentation
     └── Window.test.tsx     # Vitest Unit Tests
 ```
@@ -41,7 +41,7 @@ src/components/
 
 ```tsx
 // ✅ GOOD
-import styles from './Window.module.scss';
+import './Window.scss';
 
 interface WindowProps {
   title: string;
@@ -50,8 +50,8 @@ interface WindowProps {
 
 export const Window = ({ title, isOpen }: WindowProps) => {
   return (
-    <div className={styles.window}>
-      <h2 className={styles.title}>{title}</h2>
+    <div className="diegohq-window">
+      <h2 className="diegohq-window__title">{title}</h2>
     </div>
   );
 };
@@ -76,12 +76,14 @@ export default function Window(props: any) { ... } // No default export, no 'any
 
 Since we are building a Retro OS, precise control over CSS is required.
 
-- **Palette Preservation:** The project's color palette (originally Tailwind-based) is preserved in `src/app/theme.css`. All components should reference these CSS variables (e.g., `var(--window-primary-bg)`) to ensure consistency.
-- **Methodology:** Use **SCSS Modules** (`.module.scss`) to scope styles to the component.
-- **Naming:** Use descriptive class names (camelCase for module access, kebab-case in SCSS).
+- **Palette Preservation:** The project's color palette is preserved in `src/styles/_variables.scss` (migrated from Tailwind). All components must reference these SCSS variables.
+- **Methodology:** Use **Plain SCSS** without modules. Styles are global.
+  - **Organization:** Co-locate SCSS files with components (e.g., `Window.scss`) but do NOT use `.module.scss`. Import these into a global entry point or the component file if using a bundler that supports side-effect imports (Next.js supports this).
+  - **Naming:** Use **BEM (Block Element Modifier)** or a strict namespacing prefix (e.g., `.diegohq-window`) to avoid collisions in the global scope.
+- **Strict Prohibition:** Do NOT use Tailwind CSS. Do NOT use CSS Modules.
 - **Pixel Art Specifics:**
   - Images/Icons must use: `image-rendering: pixelated;`.
-  - Fonts must be imported via `next/font` (e.g., Press Start 2P or Silkscreen) and applied via a class.
+  - Fonts must be imported via `next/font` and applied via global classes or mixins.
 
 ---
 
@@ -120,7 +122,8 @@ Since we are building a Retro OS, precise control over CSS is required.
   1.  React / Next.js
   2.  Third-party libraries
   3.  Internal Components (`@/components/...`)
-  4.  Hooks / Utils (`@/hooks/...`, `@/lib/...`) 5. Styles (`./Component.module.scss`)
+  4.  Hooks / Utils (`@/hooks/...`, `@/lib/...`)
+  5.  Styles (`./Component.scss`)
 
   ***
 
@@ -243,7 +246,7 @@ const jsonLd = {
 ### 10.5. Technical SEO
 
 - **Sitemap:** Auto-generate via `next-sitemap` or Next.js built-in sitemap generation.
-- **Robots.txt:** Ensure crawlers can access public content; block admin routes (`/keystatic/*`).
+- **Robots.txt:** Ensure crawlers can access public content; block admin routes (`/admin`, `/api/*`).
 - **Canonical URLs:** Set canonical URLs for all pages to prevent duplicate content issues.
 - **Semantic HTML:** Use proper heading hierarchy (`h1` > `h2` > `h3`), `<article>`, `<nav>`, `<main>` tags.
 

@@ -13,8 +13,14 @@
     - [ ] Remove `tailwind.config.ts` and `postcss.config.mjs`.
     - [ ] Clean up `globals.css` to remove `@tailwind` directives.
 - [ ] **SCSS Setup:**
-    - [ ] Ensure `sass` is installed.
-    - [ ] Create `src/styles/_variables.scss` and `src/styles/_mixins.scss` for shared SASS resources (breakpoints, pixel-art helpers).
+    - [ ] **Strict Requirement:** Do NOT use SCSS Modules. Use plain `.scss` files.
+    - [ ] Create `src/styles/` directory structure:
+        - `_variables.scss` (Colors, Fonts - extracted from Tailwind theme)
+        - `_mixins.scss` (Breakpoints, Helpers)
+        - `_reset.scss`
+        - `main.scss` (The root import file)
+    - [ ] **Migration:** Move all component styles from `*.module.scss` (if any) to `*.scss` (Plain).
+    - [ ] **Cleanup:** Ensure `globals.css` is replaced by `src/styles/main.scss`.
 
 ### 2. Core UI Components (Refactoring)
 - [ ] **Desktop Layout:**
@@ -40,13 +46,16 @@
     - [ ] Implement Title Bar actions: Close, Minimize, Maximize.
     - [ ] Ensure "contained" drag behavior (windows cannot be dragged off-screen).
 
-### 4. CMS & Content (Keystatic)
-- [ ] **Installation:** Install `@keystatic/core` and `@keystatic/next`.
-- [ ] **Configuration:**
-    - [ ] Create `keystatic.config.ts`.
-    - [ ] Define `posts` collection (fields: title, slug, date, content, tags).
-- [ ] **Routing:** Set up Next.js route handlers for Keystatic Admin UI.
-- [ ] **Data Access:** Create `src/lib/keystatic.ts` helper functions to fetch posts for the frontend.
+### 4. CMS & Content (Payload CMS)
+- [ ] **Setup:**
+    - [ ] Install `payload` and `react-hook-form` (if needed by Payload components).
+    - [ ] Initialize Payload Config (`payload.config.ts`) in the root.
+    - [ ] Configure Database (Postgres or MongoDB - Local or Cloud).
+- [ ] **Collections:**
+    - [ ] Define `Posts` Collection (Fields: Title, Slug, Publish Date, Content (Lexical/RichText), Tags, Author).
+- [ ] **Integration:**
+    - [ ] Ensure Next.js handles Payload routes (`/admin`, `/api/...`).
+    - [ ] Create `src/lib/payload.ts` for strictly typed data fetching on the frontend.
 
 ### 5. Backend Integration
 - [ ] **API Client:**
@@ -55,7 +64,7 @@
     - [ ] Implement `fetchGameMetadata()` to call Python backend.
 - [ ] **Journal Window:**
     - [ ] Create `Journal.tsx` (to be rendered inside a Window).
-    - [ ] Fetch post list from Keystatic.
+    - [ ] Fetch post list from Payload CMS.
     - [ ] Implement "Read Post" view (Markdown rendering).
 
 ---

@@ -14,12 +14,12 @@ A gamified programming blog styled as a retro Game Boy Advance (GBA) operating s
 **Tech Stack:**
 
 - **Frontend:** Next.js 16+ (App Router)
-- **CMS:** Keystatic (Git-based, Markdown)
+- **CMS:** Payload CMS (Next.js Native)
 - **Game Backend:** Python FastAPI (External API - not in this repo)
 - **Language:** TypeScript (Strict Mode)
 - **React:** 19+ (Functional Components only)
 - **Window Management:** `react-rnd`
-- **Styling:** SCSS Modules (`.module.scss`)
+- **Styling:** Plain SCSS (Global Scope, BEM Naming)
 - **Testing:** Vitest + Storybook
 - **Package Manager:** `pnpm`
 
@@ -37,7 +37,7 @@ diegohq-blog-frontend/
 │   ├── GAMIFICATION_MECHANICS.md # XP, levels, quests, items
 │   ├── CONTENT_STRATEGY.md      # How posts integrate with gameplay
 │   ├── MVP_ROLLOUT_PLAN.md      # Phased development approach
-│   ├── MIGRATION_GUIDE.md       # Tailwind → SCSS migration details
+│   ├── MIGRATION_GUIDE.md       # Tailwind → Plain SCSS migration details
 │   ├── todo.md                  # Current task list
 │   └── AGENT_INSTRUCTIONS.md    # THIS FILE
 ├── src/
@@ -101,7 +101,7 @@ export default function Window(props: any) { ... }
 
 ### 3. Styling
 
-- **SCSS Modules:** Use `.module.scss` files
+- **Plain SCSS:** Use `.scss` files with BEM naming (e.g., `.diegohq-window__title`)
 - **CSS Variables:** Reference from `theme.css` (e.g., `var(--window-primary-bg)`)
 - **BEM-like naming:** `hq-component--element` or `hq-component__modifier`
 - **Pixel Art CSS:** Add `image-rendering: pixelated;` to all icons/images
@@ -113,7 +113,7 @@ Each component lives in its own folder:
 ```
 src/components/ComponentName/
 ├── ComponentName.tsx
-├── ComponentName.module.scss
+├── ComponentName.scss
 ├── ComponentName.stories.tsx
 └── ComponentName.test.tsx
 ```
@@ -137,7 +137,7 @@ import { Button } from '@/components/Button';
 import { useWindowContext } from '@/hooks/useWindowContext';
 
 // 5. Styles (last)
-import styles from './ComponentName.module.scss';
+import './ComponentName.scss';
 ```
 
 ### 6. Commit Messages
@@ -281,7 +281,7 @@ Reference `planning/todo.md` for the full list. Key priorities:
 4. Remove Tailwind dependencies
 5. Replace Tailwind utility classes with SCSS (see `MIGRATION_GUIDE.md`)
 6. Move components from `src/stories/components/` to `src/components/`
-7. Convert `.scss` files to `.module.scss`
+7. Convert styles to Plain `.scss` files
 
 ### 2. Component Enhancements
 
@@ -297,8 +297,8 @@ Reference `planning/todo.md` for the full list. Key priorities:
 
 ### 4. CMS & Content
 
-1. Install Keystatic (`@keystatic/core`, `@keystatic/next`)
-2. Create `keystatic.config.ts`
+1. Install Payload CMS (`payload`, `graphql`, etc.)
+2. Create `payload.config.ts`
 3. Create Journal component to list and render posts
 
 ---
@@ -321,7 +321,7 @@ pnpm test       # Run Vitest
 1. Create folder: `src/components/ComponentName/`
 2. Create files:
    - `ComponentName.tsx` (component logic)
-   - `ComponentName.module.scss` (styles)
+   - `ComponentName.scss` (styles)
    - `ComponentName.stories.tsx` (Storybook)
    - `ComponentName.test.tsx` (tests - optional for MVP)
 
@@ -331,7 +331,7 @@ Example template:
 // ComponentName.tsx
 'use client'; // Only if needed
 
-import styles from './ComponentName.module.scss';
+import './ComponentName.scss';
 
 interface ComponentNameProps {
   // Define props
@@ -343,8 +343,10 @@ export const ComponentName = ({ ...props }: ComponentNameProps) => {
 ```
 
 ```scss
-// ComponentName.module.scss
-.componentName {
+// ComponentName.scss
+.diegohq-component-name {
+  /* styles */
+}
   // Styles using CSS variables
   background: var(--window-primary-bg);
   padding: var(--space-4);
@@ -373,7 +375,7 @@ When using CSS Modules with external libraries (like react-rnd):
 ```
 
 ```scss
-// In your .module.scss
+// In your .scss file
 :global(.hq-window--header) {
   cursor: move;
 }
@@ -467,7 +469,7 @@ The Python FastAPI backend handles:
 | `THEMING_AND_AESTHETICS.md` | Visual design, colors, fonts |
 | `GAMIFICATION_MECHANICS.md` | XP, levels, quests, items    |
 | `MVP_ROLLOUT_PLAN.md`       | Development phases           |
-| `MIGRATION_GUIDE.md`        | Tailwind → SCSS migration    |
+| `MIGRATION_GUIDE.md`        | Tailwind → Plain SCSS migration    |
 | `todo.md`                   | Current task list            |
 
 ---

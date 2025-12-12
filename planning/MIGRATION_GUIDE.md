@@ -1,6 +1,6 @@
-# Migration Guide: Tailwind to SCSS Modules
+# Migration Guide: Tailwind to Plain SCSS
 
-This document ensures that **NO design or functionality is lost** during the migration from Tailwind CSS to SCSS Modules. It serves as a checklist and reference for the cleanup tasks in Phase 1.
+This document ensures that **NO design or functionality is lost** during the migration from Tailwind CSS to Standard SCSS. It serves as a checklist and reference for the cleanup tasks in Phase 1.
 
 ---
 
@@ -500,26 +500,26 @@ src/
 └── components/           # Moved from stories/components
     ├── Button/
     │   ├── Button.tsx
-    │   └── Button.module.scss
+    │   └── Button.scss
     ├── Desktop/
     │   ├── Desktop.tsx
-    │   └── Desktop.module.scss
+    │   └── Desktop.scss
     ├── DesktopIcon/
     │   ├── DesktopIcon.tsx
-    │   └── DesktopIcon.module.scss
+    │   └── DesktopIcon.scss
     ├── Navbar/
     │   ├── Navbar.tsx
-    │   └── Navbar.module.scss
+    │   └── Navbar.scss
     └── Window/
         ├── Window.tsx
-        ├── Window.module.scss
+        ├── Window.scss
         ├── WindowContext.tsx
         ├── WindowHeader/
         │   ├── WindowHeader.tsx
-        │   └── WindowHeader.module.scss
+        │   └── WindowHeader.scss
         └── WindowButton/
             ├── WindowButton.tsx
-            └── WindowButton.module.scss
+            └── WindowButton.scss
 ```
 
 ---
@@ -551,10 +551,7 @@ src/
 
 ## 9. Notes
 
-1. **SCSS Modules vs Regular SCSS:** The current components use regular SCSS imports (`import './Window.scss'`). The technical standards say to use SCSS Modules (`.module.scss`). During migration, convert to modules for better scoping.
+1. **Plain SCSS Enforcement:** The current components use regular SCSS imports (`import './Window.scss'`). This is CORRECT. Do NOT convert to SCSS Modules. Ensure all new components follow this pattern.
 
-2. **BEM Naming:** Current SCSS already follows BEM-like naming (`hq-window--header`). Keep this convention.
+2. **BEM Naming:** Current SCSS already follows BEM-like naming (`hq-window--header`). Keep this convention to avoid global namespace collisions.
 
-3. **react-rnd Dependency:** The `dragHandleClassName` in react-rnd relies on the exact class name `hq-window--header`. If converting to CSS Modules, you'll need to use the generated class name or use `:global()` for this specific class.
-
-4. **Component Location:** Components are currently in `src/stories/components/`. The final structure should move them to `src/components/` (keeping stories co-located).

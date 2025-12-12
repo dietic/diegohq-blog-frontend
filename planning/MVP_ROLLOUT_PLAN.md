@@ -8,16 +8,16 @@ The goal of this phase is to build a functional, themed blog without the complex
 
 -   **Key Objectives:**
     -   [ ] Set up the Next.js project structure.
-    -   [ ] **CMS Setup:** Initialize **Keystatic** (Git-based CMS) for writing Blog Posts (Markdown).
+    -   [ ] **CMS Setup:** Initialize **Payload CMS** (Next.js Native) for writing Blog Posts (Lexical/RichText).
     -   [ ] **Backend Integration:** Create API Client to fetch Game Metadata from Python Backend (`/content/posts`).
     -   [ ] Create the main "Desktop" layout.
     -   [ ] **Preserve Color Palette:** Extract current Tailwind-based color variables to a standalone CSS file (`src/app/theme.css`) before removing Tailwind.
     -   [ ] Implement the **Windowing System**: Use `react-rnd` for drag-and-drop window management.
-    -   [ ] Design and build the **Journal Window** to fetch posts from Keystatic + Python Backend.
+    -   [ ] Design and build the **Journal Window** to fetch posts from Payload CMS + Python Backend.
     -   [ ] Create the basic visual assets in the chosen pixel-art style (icons, window frames).
     -   [ ] Establish the core CSS/SCSS for the retro theme (refactoring existing components `Desktop`, `Window`, `Navbar`, etc.).
 -   **Gamification:** None in this phase. The focus is purely on the user interface and content delivery.
--   **Outcome:** A visually unique blog powered by Keystatic (Content) and Python (Data).
+-   **Outcome:** A visually unique blog powered by Payload CMS (Content) and Python (Data).
 
 ---
 
