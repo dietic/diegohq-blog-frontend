@@ -11,9 +11,9 @@ export const pixelifySans = Pixelify_Sans({
 });
 
 export const pressStart2P = Press_Start_2P({
+  subsets: ['latin'],
   weight: '400',
   variable: '--font-press-start-2p',
-  subsets: ['latin'],
 });
 
 export const vt323 = VT323({

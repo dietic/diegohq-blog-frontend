@@ -1,0 +1,37 @@
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1600"
+  height="900"
+  viewBox="0 0 160 90"
+  shape-rendering="crispEdges"
+>
+  <!-- Base dark navy -->
+  <rect width="160" height="90" fill="#050816" />
+
+  <!-- Horizontal scanlines -->
+  <defs>
+    <pattern id="scanlines" width="1" height="2" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="1" height="1" fill="rgba(255,255,255,0.02)" />
+      <rect x="0" y="1" width="1" height="1" fill="rgba(0,0,0,0)" />
+    </pattern>
+
+    <!-- Small tiling pattern for stars -->
+    <pattern id="stars" width="16" height="16" patternUnits="userSpaceOnUse">
+      <!-- white stars -->
+      <rect x="2"  y="3"  width="0.4" height="0.4" fill="#f5f7ff" />
+      <rect x="10" y="12" width="0.4" height="0.4" fill="#f5f7ff" />
+      <rect x="7"  y="7"  width="0.4" height="0.4" fill="#f5f7ff" />
+      <!-- blue stars -->
+      <rect x="5"  y="1"  width="0.4" height="0.4" fill="#4fb1ff" />
+      <rect x="13" y="5"  width="0.4" height="0.4" fill="#3d7bff" />
+      <rect x="1"  y="11" width="0.4" height="0.4" fill="#4fb1ff" />
+    </pattern>
+  </defs>
+
+  <!-- Apply scanlines -->
+  <rect width="160" height="90" fill="url(#scanlines)" />
+
+  <!-- Apply stars -->
+  <rect width="160" height="90" fill="url(#stars)" />
+</svg>

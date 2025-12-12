@@ -1,0 +1,10 @@
+.hq-navbar {
+  width: 100%;
+  // border-bottom: 1px solid var(--window-primary-border);
+  background: var(--window-primary-header);
+  color: var(--window-primary-header-foreground);
+  display: flex;
+  justify-content: space-between;
+  font-family: 'VT323';
+  font-size: 1.25rem;
+}

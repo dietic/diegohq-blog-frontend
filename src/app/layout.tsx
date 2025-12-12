@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono, Pixelify_Sans } from 'next/font/google';
 import './globals.css';
-import { pixelifySans, pressStart2P } from './fonts';
+import { pressStart2P } from './fonts';
 
 export const metadata: Metadata = {
   title: 'Create Next App',

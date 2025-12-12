@@ -5,5 +5,41 @@
     background: var(--window-primary-bg);
     min-height: 5rem; // 80px
     min-width: 15rem; // 240px
+    display: flex;
+    flex-direction: column;
+
+    &--content {
+      flex: 1;
+      overflow: auto;
+      padding: 1rem;
+    }
+
+    &--maximized {
+      z-index: 1000 !important;
+      border-radius: 0;
+    }
+
+    &--minimized {
+      min-height: unset !important;
+      min-width: unset !important;
+      height: 40px !important;
+      z-index: 1000 !important;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-bottom: none;
+      position: fixed !important;
+      bottom: 0 !important;
+      top: auto !important;
+      left: 60px !important;
+      transform: none !important;
+
+      .hq-window--content {
+        display: none;
+      }
+
+      .hq-window--header {
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        border-bottom: none;
+      }
+    }
   }
 }

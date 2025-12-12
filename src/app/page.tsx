@@ -1,24 +1,37 @@
-import Image from 'next/image';
-import { vt323 } from './fonts';
+import Desktop from '@/stories/components/Desktop/Desktop';
+import { Window } from '@/stories/components/Window/Window';
 
 export default function Home() {
+  // Reconstructing the dummy data structure based on the original component props.
+  const dummyIcons = [
+    {
+      icon: '/desktop-icons/chest.png',
+      label: 'Inventory',
+      initialX: 20,
+      initialY: 20,
+    },
+    {
+      icon: '/desktop-icons/book.png',
+      label: 'Journal',
+      initialX: 20,
+      initialY: 120,
+    },
+    {
+      icon: '/desktop-icons/mypc.png',
+      label: 'My Computer',
+      initialX: 20,
+      initialY: 220,
+    },
+  ];
+
   return (
-    <div className="h-svh w-full flex items-center flex-col gap-8 justify-center bg-[url('/background-9-16.png')] md:bg-[url('/background-16-9.png')] bg-center bg-cover">
-      {/* <h1 className={`text-center text-background text-6xl leading-8 mb-8 drop-shadow-lg drop-shadow-`}>DIEGO HQ<br /><span className="text-2xl">Journal</span></h1> */}
-      <Image
-        src="/diegohqlogo.png"
-        alt="Diego HQ Journal Logo"
-        width={400}
-        height={200}
-        className="-mb-20"
-      />
-      <div
-        className={`border-2 border-[#3F3F3F] text-primary-foreground px-4 py-2 ${vt323.className}`}
-      >
-        <span className="mr-4">🎮</span>
-        DEV - VAN LIFE - PERSONAL GROWTH
-        <span className="ml-4">🎮</span>
-      </div>
-    </div>
+    <Desktop icons={dummyIcons}>
+      <Window windowTitle="Welcome to DiegoHQ">
+        <div className="p-4">
+          <p>This is a test window to verify the new functionality.</p>
+          <p>Try minimizing, maximizing, and closing this window!</p>
+        </div>
+      </Window>
+    </Desktop>
   );
 }
