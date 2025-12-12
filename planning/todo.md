@@ -1,0 +1,139 @@
+# Detailed To-Do List
+
+## Phase 1: The Core Journal & OS (Minimum Viable Product)
+
+### 1. Project Initialization & Cleanup
+- [ ] **Next.js Structure:** Verify and organize `src/` directory structure (components, hooks, lib, styles).
+- [ ] **Palette Preservation:**
+    - [ ] Create `src/app/theme.css`.
+    - [ ] Copy all custom colors from `tailwind.config.ts` (or current CSS) into CSS variables in `theme.css`.
+    - [ ] Ensure all existing components reference these variables.
+- [ ] **Tailwind Removal:**
+    - [ ] Uninstall `tailwindcss`, `postcss`, and related plugins.
+    - [ ] Remove `tailwind.config.ts` and `postcss.config.mjs`.
+    - [ ] Clean up `globals.css` to remove `@tailwind` directives.
+- [ ] **SCSS Setup:**
+    - [ ] Ensure `sass` is installed.
+    - [ ] Create `src/styles/_variables.scss` and `src/styles/_mixins.scss` for shared SASS resources (breakpoints, pixel-art helpers).
+
+### 2. Core UI Components (Refactoring)
+- [ ] **Desktop Layout:**
+    - [ ] Refactor `Desktop.tsx` to serve as the main screen container.
+    - [ ] Implement responsive background handling.
+- [ ] **Desktop Icons:**
+    - [ ] Refactor `DesktopIcon.tsx` to support grid positioning.
+    - [ ] Add double-click handler to open associated windows.
+    - [ ] Style with pixel-perfect focus states.
+- [ ] **Navbar (Taskbar):**
+    - [ ] Refactor `Navbar.tsx` to display the "Start" button and clock.
+    - [ ] Add dynamic list of active open windows.
+    - [ ] Implement toggle functionality (minimize/restore window on click).
+
+### 3. Window Management System
+- [ ] **Window Context:**
+    - [ ] Create `WindowContext.tsx` to manage state: `openWindows`, `activeWindowId`, `minimizedWindows`.
+    - [ ] Implement `openWindow(id, component)`, `closeWindow(id)`, `focusWindow(id)` actions.
+- [ ] **Window Component (react-rnd):**
+    - [ ] Refactor `Window.tsx` to wrap content in `<Rnd>` component.
+    - [ ] internalize `defaultPosition` and `defaultSize`.
+    - [ ] Bind `onDragStart` and `onMouseDown` to trigger `focusWindow`.
+    - [ ] Implement Title Bar actions: Close, Minimize, Maximize.
+    - [ ] Ensure "contained" drag behavior (windows cannot be dragged off-screen).
+
+### 4. CMS & Content (Keystatic)
+- [ ] **Installation:** Install `@keystatic/core` and `@keystatic/next`.
+- [ ] **Configuration:**
+    - [ ] Create `keystatic.config.ts`.
+    - [ ] Define `posts` collection (fields: title, slug, date, content, tags).
+- [ ] **Routing:** Set up Next.js route handlers for Keystatic Admin UI.
+- [ ] **Data Access:** Create `src/lib/keystatic.ts` helper functions to fetch posts for the frontend.
+
+### 5. Backend Integration
+- [ ] **API Client:**
+    - [ ] Create `src/lib/api.ts`.
+    - [ ] Define Types/Interfaces for Game Metadata responses.
+    - [ ] Implement `fetchGameMetadata()` to call Python backend.
+- [ ] **Journal Window:**
+    - [ ] Create `Journal.tsx` (to be rendered inside a Window).
+    - [ ] Fetch post list from Keystatic.
+    - [ ] Implement "Read Post" view (Markdown rendering).
+
+---
+
+## Phase 1.5: UX, Mobile & Onboarding
+
+### 1. Mobile "Handheld" Mode
+- [ ] **Responsive Logic:** Implement `useMediaQuery` or CSS media queries to detect mobile.
+- [ ] **Mobile Layout:**
+    - [ ] Create `MobileDesktop` component (alternative to `Desktop`).
+    - [ ] Replace draggable windows with full-screen views.
+    - [ ] Implement a bottom tab bar or "App Drawer" for navigation.
+
+### 2. Onboarding Experience
+- [ ] **BIOS Sequence:**
+    - [ ] Create a `BootSequence` component (black screen, scrolling text, "Memory OK").
+    - [ ] Show this only on first visit (use `localStorage` flag).
+- [ ] **Helper Sprite:**
+    - [ ] Create `Helper.tsx` (floating sprite).
+    - [ ] Implement basic dialog bubbles ("Click the Journal to start!").
+
+### 3. Accessibility & Polish
+- [ ] **Reader Mode:** Create a context/toggle to switch body font to a legible Sans-Serif.
+- [ ] **Keyboard Nav:** Ensure `Tab` cycles through Desktop Icons and Window controls.
+- [ ] **Spotlight Search:**
+    - [ ] Implement `CommandPalette` component (using `cmdk` or custom).
+    - [ ] Index posts and apps for quick search.
+
+---
+
+## Phase 2: Introducing Progression
+
+### 1. Authentication
+- [ ] **Auth Client:** Implement `login`, `register`, `logout` functions calling FastAPI.
+- [ ] **Session Management:** Store JWT securely (HTTP-only cookie or memory).
+- [ ] **Login Window:** Create a specific window for user entry.
+
+### 2. User State & XP
+- [ ] **User Hook:** Create `useUser` hook (SWR or React Query recommended) to poll/fetch `me` endpoint.
+- [ ] **Leveling Logic:**
+    - [ ] Handle "Level Up" events (compare previous level vs current level).
+    - [ ] Trigger visual celebration (confetti, sound) on level increase.
+- [ ] **Read Tracking:**
+    - [ ] Create `ReadPost` component/hook that fires API call when user scrolls to bottom of a post.
+
+### 3. Profile Window
+- [ ] **UI Design:** Create a "Character Sheet" style window.
+- [ ] **Stats Display:** Render Level, current XP, and XP to next level (progress bar).
+
+---
+
+## Phase 3: The Full Gameplay Loop
+
+### 1. Quest System
+- [ ] **Data Fetching:** Fetch available quests from API.
+- [ ] **Quest Log Window:**
+    - [ ] Create tabbed view: "Active", "Completed".
+    - [ ] Show quest details, rewards, and progress.
+- [ ] **In-Post Quests:**
+    - [ ] Create a "Quest Card" component to embed at the end of blog posts.
+    - [ ] Implement "Accept Quest" button.
+
+### 2. Inventory System
+- [ ] **Data Model:** Update `useUser` to include `inventory` array.
+- [ ] **Inventory UI:**
+    - [ ] Create `InventoryWindow.tsx`.
+    - [ ] Render grid of items with tooltips.
+- [ ] **Item Gating:**
+    - [ ] Create `ItemGate` wrapper component.
+    - [ ] If user lacks item, show "Locked" state.
+    - [ ] If user has item, render children (the hidden content).
+
+---
+
+## Phase 4: Polish and Expansion
+
+- [ ] **Audio System:**
+    - [ ] Create `AudioContext` (BGM track, SFX toggle).
+    - [ ] Add sound assets for UI interactions (click, open, close).
+- [ ] **Persistence:** Verify backend database integration for saving user progress.
+- [ ] **Achievements:** Add visual badges to the Profile Window.
