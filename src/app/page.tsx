@@ -1,5 +1,5 @@
-import Desktop from '@/stories/components/Desktop/Desktop';
-import { Window } from '@/stories/components/Window/Window';
+import Desktop from '@/components/Desktop/Desktop';
+import { Window } from '@/components/Window/Window';
 
 export default function Home() {
   // Reconstructing the dummy data structure based on the original component props.
@@ -24,14 +24,5 @@ export default function Home() {
     },
   ];
 
-  return (
-    <Desktop icons={dummyIcons}>
-      <Window windowTitle="Welcome to DiegoHQ">
-        <div className="p-4">
-          <p>This is a test window to verify the new functionality.</p>
-          <p>Try minimizing, maximizing, and closing this window!</p>
-        </div>
-      </Window>
-    </Desktop>
-  );
+  return <Desktop icons={dummyIcons}></Desktop>;
 }

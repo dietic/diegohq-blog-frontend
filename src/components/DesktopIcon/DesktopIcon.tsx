@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
-import './DesktopIcon.scss';
 import { Rnd } from 'react-rnd';
+import './DesktopIcon.scss';
 
 export interface DesktopIconProps {
   label: string;
@@ -25,7 +25,7 @@ export default function DesktopIcon({
     >
       <div className="hq-desktop-icon--overlay"></div>
       <Image src={icon} alt="logo" height={40} width={40} />
-      <span className="hq-desktop-icon--label">{label}</span>
+      <div className="hq-desktop-icon--label">{label}</div>
     </Rnd>
   );
 }

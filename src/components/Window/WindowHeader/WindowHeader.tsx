@@ -1,6 +1,6 @@
 import './WindowHeader.scss';
 
-import { vt323 } from '../../../../app/fonts';
+import { vt323 } from '../../../app/fonts';
 import { WindowButton } from '../WindowButton/WindowButton';
 
 export interface WindowHeaderProps {

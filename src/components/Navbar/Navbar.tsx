@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
-import './Navbar.scss';
 import Image from 'next/image';
+import './Navbar.scss';
 
 export default function Navbar() {
   const date = new Date();
