@@ -4,21 +4,26 @@ import Image from 'next/image';
 import './Navbar.scss';
 
 export default function Navbar() {
-  const date = new Date();
+  const [mounted, setMounted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const dateOptions: Intl.DateTimeFormatOptions = {
     month: 'short',
     day: 'numeric',
     year: 'numeric',
   };
-  const [time, setTime] = useState(Date.now());
 
   useEffect(() => {
+    setMounted(true);
     const timer = setInterval(() => {
-      setTime(Date.now());
+      setCurrentTime(new Date());
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [time]);
+  }, []);
+
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
 
   return (
     <div className="hq-navbar">
@@ -33,13 +38,15 @@ export default function Navbar() {
         </div>
         <div className="hq-navbar__title">Journal OS</div>
       </div>
-      <div className="hq-navbar__section hq-navbar__section--center">
-        {date.toLocaleDateString(undefined, dateOptions)}
+      <div className="hq-navbar__section hq-navbar__section--center" suppressHydrationWarning>
+        {mounted && currentTime.toLocaleDateString(undefined, dateOptions)}
       </div>
-      <div className="hq-navbar__section hq-navbar__section--right">
-        {new Date(time).getHours()}:
-        {new Date(time).getMinutes() < 10 ? '0' : ''}
-        {new Date(time).getMinutes()}
+      <div className="hq-navbar__section hq-navbar__section--right" suppressHydrationWarning>
+        {mounted && (
+          <>
+            {hours}:{minutes < 10 ? '0' : ''}{minutes}
+          </>
+        )}
       </div>
     </div>
   );
