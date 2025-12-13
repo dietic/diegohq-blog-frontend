@@ -7,8 +7,8 @@ This document serves as the "source of truth" for all development on the **Diego
 ## 1. Tech Stack & Versioning
 
 - **Frontend:** Next.js 16+ (App Router).
-- **Content CMS:** Payload CMS 3.0+ (Next.js Native).
-- **Game Backend:** Python FastAPI (External API).
+- **Content CMS:** Refine (Admin Interface).
+- **Game Backend:** Custom Node.js Backend (or chosen stack).
 - **Language:** TypeScript (Strict Mode).
 - **Library:** React 19+ (Functional Components only).
 - **Window Management:** `react-rnd`.
@@ -99,7 +99,7 @@ Since we are building a Retro OS, precise control over CSS is required.
 ## 5. State Management
 
 - **Local State:** `useState` / `useReducer` for component-level logic.
-- **Auth & User Data:** JWT Token (from FastAPI). User profile (`xp`, `level`) is fetched from `/api/v1/users/me`.
+- **Auth & User Data:** JWT Token (from Backend). User profile (`xp`, `level`) is fetched from `/api/v1/users/me`.
 - **Global State:** React Context API (e.g., `WindowContext`, `ThemeContext`).
 - **URL State:** For shareable state (e.g., active tab, selected post), prefer storing state in the URL Search Params (`useSearchParams`).
 

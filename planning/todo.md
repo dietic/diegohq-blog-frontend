@@ -46,25 +46,26 @@
     - [x] Implement Title Bar actions: Close, Minimize, Maximize.
     - [x] Ensure "contained" drag behavior (add `bounds="parent"`).
 
-### 4. CMS & Content (Payload CMS)
+### 4. CMS & Content (Refine)
 - [ ] **Setup:**
-    - [ ] Install `payload` and `react-hook-form` (if needed by Payload components).
-    - [ ] Initialize Payload Config (`payload.config.ts`) in the root.
-    - [ ] Configure Database (Postgres or MongoDB - Local or Cloud).
-- [ ] **Collections:**
-    - [ ] Define `Posts` Collection (Fields: Title, Slug, Publish Date, Content (Lexical/RichText), Tags, Author).
+    - [ ] Install Refine packages (`@refinedev/core`, `@refinedev/nextjs-router`, `@refinedev/react-hook-form`, etc.).
+    - [ ] Initialize Refine integration (likely under `src/app/admin` or similar).
+    - [ ] Select and configure Data Provider (Rest, Supabase, or NestJS).
+- [ ] **Resources:**
+    - [ ] Define `posts` resource (list, create, edit, show).
+    - [ ] Define `projects` resource.
 - [ ] **Integration:**
-    - [ ] Ensure Next.js handles Payload routes (`/admin`, `/api/...`).
-    - [ ] Create `src/lib/payload.ts` for strictly typed data fetching on the frontend.
+    - [ ] Ensure Next.js handles Refine routes properly.
+    - [ ] Create `src/lib/api.ts` or `src/lib/cms.ts` for fetching content for the frontend from the backend.
 
 ### 5. Backend Integration
 - [ ] **API Client:**
     - [ ] Create `src/lib/api.ts`.
     - [ ] Define Types/Interfaces for Game Metadata responses.
-    - [ ] Implement `fetchGameMetadata()` to call Python backend.
+    - [ ] Implement `fetchGameMetadata()` to call Backend API.
 - [ ] **Journal Window:**
     - [ ] Create `Journal.tsx` (to be rendered inside a Window).
-    - [ ] Fetch post list from Payload CMS.
+    - [ ] Fetch post list from Backend/CMS.
     - [ ] Implement "Read Post" view (Markdown rendering).
 
 ---
@@ -98,7 +99,7 @@
 ## Phase 2: Introducing Progression
 
 ### 1. Authentication
-- [ ] **Auth Client:** Implement `login`, `register`, `logout` functions calling FastAPI.
+- [ ] **Auth Client:** Implement `login`, `register`, `logout` functions calling Backend API.
 - [ ] **Session Management:** Store JWT securely (HTTP-only cookie or memory).
 - [ ] **Login Window:** Create a specific window for user entry.
 

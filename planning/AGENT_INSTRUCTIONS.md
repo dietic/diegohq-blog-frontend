@@ -14,8 +14,8 @@ A gamified programming blog styled as a retro Game Boy Advance (GBA) operating s
 **Tech Stack:**
 
 - **Frontend:** Next.js 16+ (App Router)
-- **CMS:** Payload CMS (Next.js Native)
-- **Game Backend:** Python FastAPI (External API - not in this repo)
+- **CMS/Admin:** Refine (Admin Interface)
+- **Game Backend:** Node.js / Custom Backend (connected via Refine Data Provider)
 - **Language:** TypeScript (Strict Mode)
 - **React:** 19+ (Functional Components only)
 - **Window Management:** `react-rnd`
@@ -297,9 +297,9 @@ Reference `planning/todo.md` for the full list. Key priorities:
 
 ### 4. CMS & Content
 
-1. Install Payload CMS (`payload`, `graphql`, etc.)
-2. Create `payload.config.ts`
-3. Create Journal component to list and render posts
+1. Install Refine (`@refinedev/core`, etc.)
+2. Configure Refine Data Provider
+3. Create Admin Dashboard for managing content
 
 ---
 

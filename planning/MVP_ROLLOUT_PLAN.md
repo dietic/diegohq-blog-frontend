@@ -8,16 +8,16 @@ The goal of this phase is to build a functional, themed blog without the complex
 
 -   **Key Objectives:**
     -   [ ] Set up the Next.js project structure.
-    -   [ ] **CMS Setup:** Initialize **Payload CMS** (Next.js Native) for writing Blog Posts (Lexical/RichText).
-    -   [ ] **Backend Integration:** Create API Client to fetch Game Metadata from Python Backend (`/content/posts`).
+    -   [ ] **CMS Setup:** Initialize **Refine** for managing Blog Posts and Projects.
+    -   [ ] **Backend Integration:** Create API Client to fetch Game Metadata from Backend (`/content/posts`).
     -   [ ] Create the main "Desktop" layout.
     -   [ ] **Preserve Color Palette:** Extract current Tailwind-based color variables to a standalone CSS file (`src/app/theme.css`) before removing Tailwind.
     -   [ ] Implement the **Windowing System**: Use `react-rnd` for drag-and-drop window management.
-    -   [ ] Design and build the **Journal Window** to fetch posts from Payload CMS + Python Backend.
+    -   [ ] Design and build the **Journal Window** to fetch posts from CMS/Backend.
     -   [ ] Create the basic visual assets in the chosen pixel-art style (icons, window frames).
     -   [ ] Establish the core CSS/SCSS for the retro theme (refactoring existing components `Desktop`, `Window`, `Navbar`, etc.).
 -   **Gamification:** None in this phase. The focus is purely on the user interface and content delivery.
--   **Outcome:** A visually unique blog powered by Payload CMS (Content) and Python (Data).
+-   **Outcome:** A visually unique blog powered by Refine (Admin) and Custom Backend (Data).
 
 ---
 
@@ -43,10 +43,10 @@ Before diving into complex gamification, ensure the base experience is usable an
 This phase introduces the core feedback loop of earning XP and leveling up.
 
 -   **Key Objectives:**
-    -   [ ] **Authentication:** Implement User Registration/Login using **FastAPI Backend**.
-    -   [ ] **User State:** Create `useUser` hook to fetch profile (`xp`, `level`) from Python API.
+    -   [ ] **Authentication:** Implement User Registration/Login using **Backend API**.
+    -   [ ] **User State:** Create `useUser` hook to fetch profile (`xp`, `level`) from Backend API.
     -   [ ] Develop the **XP and Leveling System**.
-        -   The backend logic resides in the Python API.
+        -   The backend logic resides in the Backend API.
     -   [ ] Grant XP for reading a post (call `POST /api/v1/game/read-post`).
     -   [ ] Build the **User Profile Window** to display the user's level and XP bar.
     -   [ ] Create the visual and audio feedback for leveling up.
@@ -60,7 +60,7 @@ This phase introduces the core feedback loop of earning XP and leveling up.
 This phase completes the vision by adding the interactive quest and item systems.
 
 -   **Key Objectives:**
-    -   [ ] **Data Integration:** Fetch Quests and Items from Python API.
+    -   [ ] **Data Integration:** Fetch Quests and Items from Backend API.
     -   [ ] Design and build the **Quest System** at the end of posts.
     -   [ ] Implement the **Inventory System**:
         -   Render `user.inventory` from the API response.
