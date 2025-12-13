@@ -1,0 +1,24 @@
+// SCSS Variables - Breakpoints & Font Stacks
+
+// === BREAKPOINTS ===
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$bp-wide: 1280px;
+
+// === FONT STACKS ===
+$font-pixel: 'VT323', 'Press Start 2P', monospace;
+$font-readable: 'Inter', 'Roboto', sans-serif;
+$font-mono: 'Roboto Mono', monospace;
+$font-press-start: 'Press Start 2P', monospace;
+$font-pixelify: 'Pixelify Sans', sans-serif;
+$font-jersey: 'Jersey 25', sans-serif;
+$font-vt323: 'VT323', monospace;
+
+// === Z-INDEX LAYERS ===
+$z-desktop-icon: 10;
+$z-window: 100;
+$z-window-active: 200;
+$z-navbar: 1000;
+$z-modal: 2000;
+$z-tooltip: 3000;
