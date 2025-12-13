@@ -22,8 +22,8 @@ export default function Navbar() {
 
   return (
     <div className="hq-navbar">
-      <div className="flex flex-1 pl-4">
-        <div className="flex items-center">
+      <div className="hq-navbar__section hq-navbar__section--left">
+        <div className="hq-navbar__logo">
           <Image
             src="/logo-journal.png"
             alt="Journal Logo"
@@ -31,12 +31,12 @@ export default function Navbar() {
             width={30}
           />
         </div>
-        <div className="flex-1 p-2">Journal OS</div>
+        <div className="hq-navbar__title">Journal OS</div>
       </div>
-      <div className="border-red rounded-lg flex-1 p-2">
+      <div className="hq-navbar__section hq-navbar__section--center">
         {date.toLocaleDateString(undefined, dateOptions)}
       </div>
-      <div className="p-2">
+      <div className="hq-navbar__section hq-navbar__section--right">
         {new Date(time).getHours()}:
         {new Date(time).getMinutes() < 10 ? '0' : ''}
         {new Date(time).getMinutes()}

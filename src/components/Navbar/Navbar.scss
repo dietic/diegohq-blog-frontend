@@ -7,4 +7,30 @@
   justify-content: space-between;
   font-family: 'VT323';
   font-size: 1.25rem;
+
+  &__section {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+
+    &--left {
+      flex: 1;
+      padding-left: 1rem;
+    }
+
+    &--center {
+      flex: 1;
+      border-radius: 0.5rem;
+    }
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+  }
+
+  &__title {
+    flex: 1;
+    padding: 0.5rem;
+  }
 }
