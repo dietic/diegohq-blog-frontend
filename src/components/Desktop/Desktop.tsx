@@ -11,7 +11,7 @@ export default function Desktop({ icons, children }: DesktopProps) {
   return (
     <div className="hq-desktop">
       <Navbar />
-      <div className="p-8">
+      <div className="hq-desktop__content">
         {icons &&
           icons.map((icon, idx) => {
             return (
