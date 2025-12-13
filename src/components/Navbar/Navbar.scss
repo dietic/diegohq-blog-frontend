@@ -1,3 +1,5 @@
+@use '@/styles/variables' as *;
+
 .hq-navbar {
   width: 100%;
   // border-bottom: 1px solid var(--window-primary-border);
@@ -7,6 +9,7 @@
   justify-content: space-between;
   font-family: 'VT323';
   font-size: 1.25rem;
+  z-index: $z-navbar;
 
   &__section {
     display: flex;
@@ -14,13 +17,22 @@
     padding: 0 0.5rem;
 
     &--left {
+      display: flex;
       flex: 1;
       padding-left: 1rem;
+      justify-content: flex-start;
     }
 
     &--center {
       flex: 1;
+      display: flex;
       border-radius: 0.5rem;
+      justify-content: center;
+    }
+    &--right {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
     }
   }
 
