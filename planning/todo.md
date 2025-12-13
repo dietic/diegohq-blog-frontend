@@ -25,9 +25,9 @@
 - [X] **Desktop Layout:**
     - [X] Refactor `Desktop.tsx` to serve as the main screen container.
     - [X] Implement responsive background handling.
-- [ ] **Desktop Icons:**
-    - [ ] Add double-click handler to open associated windows.
-    - [ ] Style with pixel-perfect focus states.
+- [x] **Desktop Icons:**
+    - [x] Add double-click handler to open associated windows.
+    - [x] Style with pixel-perfect focus states.
 
 ### 3. Window Management System
 - [ ] **Window Context:**
