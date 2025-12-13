@@ -22,17 +22,12 @@
     - [x] **Component Styles:** All component `.scss` files should use plain SCSS (not `.module.scss`).
 
 ### 2. Core UI Components (Refactoring)
-- [ ] **Desktop Layout:**
-    - [ ] Refactor `Desktop.tsx` to serve as the main screen container.
-    - [ ] Implement responsive background handling.
+- [X] **Desktop Layout:**
+    - [X] Refactor `Desktop.tsx` to serve as the main screen container.
+    - [X] Implement responsive background handling.
 - [ ] **Desktop Icons:**
-    - [ ] Refactor `DesktopIcon.tsx` to support grid positioning.
     - [ ] Add double-click handler to open associated windows.
     - [ ] Style with pixel-perfect focus states.
-- [ ] **Navbar (Taskbar):**
-    - [ ] Refactor `Navbar.tsx` to display the "Start" button and clock.
-    - [ ] Add dynamic list of active open windows.
-    - [ ] Implement toggle functionality (minimize/restore window on click).
 
 ### 3. Window Management System
 - [ ] **Window Context:**
