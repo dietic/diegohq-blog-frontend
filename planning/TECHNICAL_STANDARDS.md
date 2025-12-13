@@ -72,7 +72,7 @@ export default function Window(props: any) { ... } // No default export, no 'any
 
 ---
 
-## 3. Styling Strategy: SCSS Modules & Pixel Art
+## 3. Styling Strategy: Plain SCSS & Pixel Art
 
 Since we are building a Retro OS, precise control over CSS is required.
 

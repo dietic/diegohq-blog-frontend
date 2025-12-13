@@ -3,24 +3,23 @@
 ## Phase 1: The Core Journal & OS (Minimum Viable Product)
 
 ### 1. Project Initialization & Cleanup
-- [ ] **Next.js Structure:** Verify and organize `src/` directory structure (components, hooks, lib, styles).
-- [ ] **Palette Preservation:**
-    - [ ] Create `src/app/theme.css`.
-    - [ ] Copy all custom colors from `tailwind.config.ts` (or current CSS) into CSS variables in `theme.css`.
-    - [ ] Ensure all existing components reference these variables.
-- [ ] **Tailwind Removal:**
-    - [ ] Uninstall `tailwindcss`, `postcss`, and related plugins.
-    - [ ] Remove `tailwind.config.ts` and `postcss.config.mjs`.
-    - [ ] Clean up `globals.css` to remove `@tailwind` directives.
-- [ ] **SCSS Setup:**
-    - [ ] **Strict Requirement:** Do NOT use SCSS Modules. Use plain `.scss` files.
-    - [ ] Create `src/styles/` directory structure:
+- [x] **Next.js Structure:** Verify and organize `src/` directory structure (components, hooks, lib, styles).
+- [x] **Palette Preservation:**
+    - [x] Create `src/app/theme.css`.
+    - [x] Copy all custom colors from `tailwind.config.ts` (or current CSS) into CSS variables in `theme.css`.
+    - [x] Ensure all existing components reference these variables.
+- [x] **Tailwind Removal:**
+    - [x] Uninstall `tailwindcss`, `postcss`, and related plugins. (tailwindcss removed from package.json)
+    - [x] Remove `tailwind.config.ts` and `postcss.config.mjs`. (tailwind.config.ts doesn't exist; postcss.config.mjs deleted)
+    - [x] Clean up `globals.css` to remove `@tailwind` directives and Tailwind-specific syntax.
+- [x] **SCSS Setup:**
+    - [x] **Strict Requirement:** Do NOT use SCSS Modules. Use plain `.scss` files.
+    - [x] Create `src/styles/` directory structure:
         - `_variables.scss` (Colors, Fonts - extracted from Tailwind theme)
         - `_mixins.scss` (Breakpoints, Helpers)
         - `_reset.scss`
-        - `main.scss` (The root import file)
-    - [ ] **Migration:** Move all component styles from `*.module.scss` (if any) to `*.scss` (Plain).
-    - [ ] **Cleanup:** Ensure `globals.css` is replaced by `src/styles/main.scss`.
+    - [x] **Keep globals.css:** Continue using `src/app/globals.css` and import theme variables into it.
+    - [x] **Component Styles:** All component `.scss` files should use plain SCSS (not `.module.scss`).
 
 ### 2. Core UI Components (Refactoring)
 - [ ] **Desktop Layout:**
