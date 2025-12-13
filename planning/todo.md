@@ -30,15 +30,15 @@
     - [x] Style with pixel-perfect focus states.
 
 ### 3. Window Management System
-- [ ] **Window Context:**
-    - [ ] Create `WindowContext.tsx` to manage state: `openWindows`, `activeWindowId`, `minimizedWindows`.
-    - [ ] Implement `openWindow(id, component)`, `closeWindow(id)`, `focusWindow(id)` actions.
-- [ ] **Window Component (react-rnd):**
-    - [ ] Refactor `Window.tsx` to wrap content in `<Rnd>` component.
-    - [ ] internalize `defaultPosition` and `defaultSize`.
-    - [ ] Bind `onDragStart` and `onMouseDown` to trigger `focusWindow`.
-    - [ ] Implement Title Bar actions: Close, Minimize, Maximize.
-    - [ ] Ensure "contained" drag behavior (windows cannot be dragged off-screen).
+- [ ] **Window Context (The "OS" Logic):**
+    - [ ] Update `WindowContext.tsx` to manage global state: `openWindows`, `activeWindowId`.
+    - [ ] Implement actions: `openWindow(id, component)`, `closeWindow(id)`, `focusWindow(id)`.
+- [ ] **Window Component (The UI):**
+    - [x] Refactor `Window.tsx` to wrap content in `<Rnd>` component.
+    - [x] Internalize `defaultPosition` and `defaultSize`.
+    - [ ] Bind `onMouseDown` to trigger `focusWindow` (bring to front).
+    - [x] Implement Title Bar actions: Close, Minimize, Maximize.
+    - [ ] Ensure "contained" drag behavior (add `bounds="parent"`).
 
 ### 4. CMS & Content (Payload CMS)
 - [ ] **Setup:**
