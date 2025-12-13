@@ -5,37 +5,59 @@ import './Window.scss';
 import { WindowHeader } from './WindowHeader/WindowHeader';
 
 export interface WindowProps {
+  isOpen?: boolean;
   showWindowActions?: boolean;
   windowTitle: string;
   children?: React.ReactNode;
   onClose?: () => void;
   onMinimize?: () => void;
+  style?: React.CSSProperties;
+  onMouseDown?: () => void;
 }
 
 export const Window = ({
+  isOpen = false,
   showWindowActions = true,
   windowTitle,
   children,
   onClose,
   onMinimize,
+  style,
+  onMouseDown,
 }: WindowProps) => {
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const [isClosed, setIsClosed] = useState(false);
+  const [isClosed, setIsClosed] = useState(!isOpen);
+
   const [windowState, setWindowState] = useState({
     x: 100,
     y: 50,
     width: 500,
     height: 600,
   });
+
+  // Store the state before maximizing to restore it later
+  const [preMaximizedState, setPreMaximizedState] = useState<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+
   const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
     const handleResize = () => {
-      setViewportSize({ width: window.innerWidth, height: window.innerHeight });
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      setViewportSize({ width: newWidth, height: newHeight });
+      
+      // If maximized, update the window size to match viewport
+      if (isMaximized) {
+        setWindowState(prev => ({ ...prev, width: newWidth, height: newHeight }));
+      }
     };
 
-    // Set initial
     if (typeof window !== 'undefined') {
       handleResize();
       window.addEventListener('resize', handleResize);
@@ -45,7 +67,7 @@ export const Window = ({
         window.removeEventListener('resize', handleResize);
       }
     };
-  }, []);
+  }, [isMaximized]); // Re-bind/check when isMaximized changes to ensure sync
 
   const handleClose = () => {
     setIsClosed(true);
@@ -58,17 +80,29 @@ export const Window = ({
     } else {
       setIsMinimized(!isMinimized);
       if (!isMinimized && isMaximized) {
-        setIsMaximized(false);
+        if (!onMinimize) setIsMaximized(false); 
       }
     }
   };
 
   const handleMaximize = () => {
     if (isMaximized) {
-      // When restoring from maximized, center the window
-      const centerX = (viewportSize.width - windowState.width) / 2;
-      const centerY = (viewportSize.height - windowState.height) / 2;
-      setWindowState((prev) => ({ ...prev, x: centerX, y: centerY }));
+      // Restore
+      if (preMaximizedState) {
+        setWindowState(preMaximizedState);
+      } else {
+        // Fallback if no pre-state
+        setWindowState(prev => ({ ...prev, width: 500, height: 600, x: 100, y: 50 }));
+      }
+    } else {
+      // Maximize
+      setPreMaximizedState(windowState);
+      setWindowState({
+        x: 0,
+        y: 0,
+        width: viewportSize.width || window.innerWidth,
+        height: viewportSize.height || window.innerHeight
+      });
     }
     setIsMaximized(!isMaximized);
     if (isMinimized) setIsMinimized(false);
@@ -76,41 +110,22 @@ export const Window = ({
 
   if (isClosed) return null;
 
-  const getPosition = () => {
-    if (isMaximized) return { x: 0, y: 0 };
-    if (isMinimized) {
-      // Position is handled by CSS when minimized
-      return { x: 0, y: 0 };
-    }
-    return { x: windowState.x, y: windowState.y };
-  };
-
-  const getSize = () => {
-    if (isMaximized) return { width: '100%', height: '100%' };
-    if (isMinimized) return { width: 250, height: 40 }; // Header height only
-    return { width: windowState.width, height: windowState.height };
-  };
-
   return (
     <Rnd
+      style={style}
+      onMouseDown={onMouseDown}
       dragHandleClassName="hq-window--header"
-      size={getSize()}
-      position={getPosition()}
-      onDrag={(e: any, d) => {
-        // Only restore from maximized when actually dragging (moved more than a few pixels)
-        if (isMaximized && (Math.abs(d.deltaX) > 2 || Math.abs(d.deltaY) > 2)) {
-          setIsMaximized(false);
-          // Calculate new X to center the window on the mouse cursor
-          const newX = e.clientX - windowState.width / 2;
-          const newY = e.clientY - 20; // Offset for header height approx
-          setWindowState((prev) => ({ ...prev, x: newX, y: newY }));
-        }
-      }}
+      
+      // Directly use windowState. Rnd is fully controlled here.
+      size={{ width: windowState.width, height: windowState.height }}
+      position={{ x: windowState.x, y: windowState.y }}
+      
       onDragStop={(e, d) => {
         if (!isMinimized && !isMaximized) {
           setWindowState((prev) => ({ ...prev, x: d.x, y: d.y }));
         }
       }}
+      
       onResizeStop={(e, direction, ref, delta, position) => {
         setWindowState({
           width: parseInt(ref.style.width),
@@ -118,11 +133,13 @@ export const Window = ({
           ...position,
         });
       }}
-      disableDragging={isMinimized}
+      
+      disableDragging={isMaximized || isMinimized}
       enableResizing={!isMaximized && !isMinimized}
       className={`hq-window ${isMaximized ? 'hq-window--maximized' : ''} ${
         isMinimized ? 'hq-window--minimized' : ''
       }`}
+      bounds="parent"
     >
       <WindowHeader
         windowTitle={windowTitle}
@@ -131,7 +148,7 @@ export const Window = ({
         onMaximize={handleMaximize}
         onMinimize={isMinimized ? undefined : handleMinimize}
       />
-      <div className="hq-window--content">{children}</div>
+      {!isMinimized && <div className="hq-window--content">{children}</div>}
     </Rnd>
   );
 };

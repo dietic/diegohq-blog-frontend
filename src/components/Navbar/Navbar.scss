@@ -2,47 +2,109 @@
 
 .hq-navbar {
   width: 100%;
-  // border-bottom: 1px solid var(--window-primary-border);
   background: var(--window-primary-header);
   color: var(--window-primary-header-foreground);
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   font-family: 'VT323';
   font-size: 1.25rem;
+  padding: 0 0.5rem;
+  height: 48px;
+  border-bottom: 2px solid var(--window-primary-border);
+  gap: 0.5rem;
   z-index: $z-navbar;
 
-  &__section {
+  // === 1. START BUTTON ===
+  &__start {
     display: flex;
     align-items: center;
-    padding: 0 0.5rem;
 
-    &--left {
+    &-btn {
       display: flex;
-      flex: 1;
-      padding-left: 1rem;
-      justify-content: flex-start;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      background: var(--window-primary-action-bg);
+      border: 2px solid var(--window-primary-border);
+      border-radius: 4px;
+      color: inherit;
+      font-family: inherit;
+      font-size: 1.25rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+
+      &:active {
+        transform: translate(2px, 2px);
+        box-shadow: none;
+      }
     }
 
-    &--center {
-      flex: 1;
-      display: flex;
-      border-radius: 0.5rem;
-      justify-content: center;
-    }
-    &--right {
-      flex: 1;
-      display: flex;
-      justify-content: flex-end;
+    &-text {
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
   }
 
-  &__logo {
-    display: flex;
-    align-items: center;
-  }
-
-  &__title {
+  // === 2. TASKS LIST ===
+  &__tasks {
     flex: 1;
-    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-left: 0.5rem;
+    
+    // Hide scrollbar
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &__task-item {
+    display: flex;
+    align-items: center;
+    max-width: 160px;
+    height: 36px;
+    padding: 0 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid transparent;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    font-family: 'VT323';
+    font-size: 1.1rem;
+    transition: all 0.1s;
+    gap: 0.5rem;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    &--active {
+      background: var(--window-primary-bg);
+      color: black;
+      border: 2px solid var(--window-primary-border);
+      box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.5), 
+                  2px 2px 0px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  &__task-text {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // === 3. TRAY ===
+  &__tray {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 }

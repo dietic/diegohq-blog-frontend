@@ -4,6 +4,9 @@
   flex-direction: column;
   height: 100svh;
   &__content {
-    padding: 2rem;
+    flex: 1;
+    position: relative;
+    padding: 1rem;
+    overflow: hidden; // Prevent windows from scrolling the desktop area itself
   }
 }

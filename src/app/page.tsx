@@ -14,13 +14,13 @@ export default function Home() {
       icon: '/desktop-icons/book.png',
       label: 'Journal',
       initialX: 20,
-      initialY: 120,
+      initialY: 140,
     },
     {
       icon: '/desktop-icons/mypc.png',
       label: 'My Computer',
       initialX: 20,
-      initialY: 220,
+      initialY: 260,
     },
   ];
 

@@ -9,6 +9,7 @@ export interface DesktopIconProps {
   initialX?: number;
   initialY?: number;
   windowUrl?: string;
+  onDoubleClick?: () => void;
 }
 
 export default function DesktopIcon({
@@ -16,6 +17,7 @@ export default function DesktopIcon({
   icon,
   initialX = 0,
   initialY = 0,
+  onDoubleClick,
 }: DesktopIconProps) {
   return (
     <Rnd
@@ -23,9 +25,15 @@ export default function DesktopIcon({
       enableResizing={false}
       default={{ x: initialX, y: initialY, width: 90, height: 80 }}
     >
-      <div className="hq-desktop-icon--overlay"></div>
-      <Image src={icon} alt="logo" height={40} width={40} />
-      <div className="hq-desktop-icon--label">{label}</div>
+      <div 
+        className="hq-desktop-icon__container" 
+        onDoubleClick={onDoubleClick}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <div className="hq-desktop-icon--overlay"></div>
+        <Image src={icon} alt="logo" height={60} width={60} />
+        <div className="hq-desktop-icon--label">{label}</div>
+      </div>
     </Rnd>
   );
 }
