@@ -1,56 +1,24 @@
+/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Jersey+25&family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=VT323&display=swap');
-@import 'tailwindcss';
-@import 'tw-animate-css';
 
-@custom-variant dark (&:is(.dark *));
+/* Import Theme Variables */
+@import './theme.css';
 
-:root {
-  --radius-xs: 0.125rem;
-  --radius-md: 0.25rem;
-  --radius-lg: 0.5rem;
-  --button-primary: oklch(0.9021 0.134 165.84);
-  --button-primary-border: oklch(0.7066 0.1637 158.07);
-  /* window */
-  --window-primary-bg: oklch(0.9861 0.0017 325.59);
-  --window-primary-border: oklch(0.2768 0 0);
-  --window-primary-header: oklch(0.3739 0.0599 264.04);
-  --window-primary-header-foreground: oklch(0.9861 0.0017 325.59);
-  --window-primary-action-bg: oklch(0.5252 0.0599 264.04);
-  --window-primary-action-bg--hover: oklch(0.5252 0.0599 264.04 / 40%);
-  /* icons */
-  --icon-primary-label-bg: oklch(0.3739 0.0599 264.04 / 80%);
+/* === Base Resets === */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-/* default (light) theme */
-@theme inline {
-  --button-primary: var(--button-primary);
-  --button-primary-border: var(--button-primary-border);
-  --window-primary-bg: var(--window-primary-bg);
-  --window-primary-border: var(--window-primary-border);
-  --window-primary-bg: var(--window-primary-bg);
-  --window-primary-border: var(--window-primary-border);
-  --window-primary-header: var(--window-primary-header);
-}
-
-/* dark theme */
-.dark {
-  --button-primary: var(--button-primary);
-  --button-primary-border: var(--button-primary-border);
-  --window-primary-bg: var(--window-primary-bg);
-  --window-primary-border: var(--window-primary-border);
-  --window-primary-bg: var(--window-primary-bg);
-  --window-primary-border: var(--window-primary-border);
-  --window-primary-header: var(--window-primary-header);
+html {
+  font-size: 16px;
 }
 
 body {
-  /* background: var(--background); */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-position: center center;
-}
-
-@layer base {
-  * {
-  }
-  body {
-  }
 }
