@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { Window } from './Window';
+import { SampleWindow } from './SampleWindow';
 
 const meta = {
   title: 'Window',
@@ -18,4 +19,9 @@ export const Default: Story = {
   args: {
     windowTitle: 'Quests',
   },
+  render: (args) => (
+    <Window {...args}>
+      <SampleWindow />
+    </Window>
+  ),
 };

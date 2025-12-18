@@ -3,35 +3,82 @@
   xmlns="http://www.w3.org/2000/svg"
   width="1600"
   height="900"
-  viewBox="0 0 160 90"
+  viewBox="0 0 320 180"
   shape-rendering="crispEdges"
 >
   <!-- Base dark navy -->
-  <rect width="160" height="90" fill="#050816" />
+  <rect width="320" height="180" fill="#050816" />
 
-  <!-- Horizontal scanlines -->
   <defs>
-    <pattern id="scanlines" width="1" height="2" patternUnits="userSpaceOnUse">
-      <rect x="0" y="0" width="1" height="1" fill="rgba(255,255,255,0.02)" />
-      <rect x="0" y="1" width="1" height="1" fill="rgba(0,0,0,0)" />
+    <!-- Speckle texture pattern - mimics noise/grain texture -->
+    <pattern id="speckles" width="32" height="32" patternUnits="userSpaceOnUse">
+      <!-- Primary speckles - slightly lighter navy dots -->
+      <rect x="3" y="2" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      <rect x="17" y="5" width="1" height="1" fill="rgba(59, 66, 97, 0.35)" />
+      <rect x="28" y="3" width="1" height="1" fill="rgba(59, 66, 97, 0.45)" />
+      <rect x="8" y="9" width="1" height="1" fill="rgba(59, 66, 97, 0.3)" />
+      <rect x="22" y="11" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      <rect x="14" y="7" width="1" height="1" fill="rgba(59, 66, 97, 0.35)" />
+      <rect x="1" y="14" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      <rect x="11" y="16" width="1" height="1" fill="rgba(59, 66, 97, 0.3)" />
+      <rect x="25" y="18" width="1" height="1" fill="rgba(59, 66, 97, 0.45)" />
+      <rect x="6" y="21" width="1" height="1" fill="rgba(59, 66, 97, 0.35)" />
+      <rect x="19" y="23" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      <rect x="30" y="20" width="1" height="1" fill="rgba(59, 66, 97, 0.3)" />
+      <rect x="4" y="27" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      <rect x="15" y="29" width="1" height="1" fill="rgba(59, 66, 97, 0.35)" />
+      <rect x="27" y="26" width="1" height="1" fill="rgba(59, 66, 97, 0.45)" />
+      <rect x="10" y="31" width="1" height="1" fill="rgba(59, 66, 97, 0.3)" />
+      <rect x="21" y="28" width="1" height="1" fill="rgba(59, 66, 97, 0.4)" />
+      
+      <!-- Secondary speckles - purple-tinted dots (matching window header) -->
+      <rect x="5" y="6" width="1" height="1" fill="rgba(75, 65, 115, 0.3)" />
+      <rect x="24" y="8" width="1" height="1" fill="rgba(75, 65, 115, 0.25)" />
+      <rect x="13" y="13" width="1" height="1" fill="rgba(75, 65, 115, 0.3)" />
+      <rect x="29" y="15" width="1" height="1" fill="rgba(75, 65, 115, 0.25)" />
+      <rect x="2" y="19" width="1" height="1" fill="rgba(75, 65, 115, 0.3)" />
+      <rect x="18" y="25" width="1" height="1" fill="rgba(75, 65, 115, 0.25)" />
+      <rect x="8" y="30" width="1" height="1" fill="rgba(75, 65, 115, 0.3)" />
+      
+      <!-- Tertiary speckles - darker variation for depth -->
+      <rect x="12" y="4" width="1" height="1" fill="rgba(3, 5, 15, 0.5)" />
+      <rect x="26" y="12" width="1" height="1" fill="rgba(3, 5, 15, 0.45)" />
+      <rect x="7" y="17" width="1" height="1" fill="rgba(3, 5, 15, 0.5)" />
+      <rect x="20" y="22" width="1" height="1" fill="rgba(3, 5, 15, 0.45)" />
+      <rect x="31" y="29" width="1" height="1" fill="rgba(3, 5, 15, 0.5)" />
+      <rect x="16" y="1" width="1" height="1" fill="rgba(3, 5, 15, 0.4)" />
+      <rect x="0" y="24" width="1" height="1" fill="rgba(3, 5, 15, 0.45)" />
+      <rect x="23" y="31" width="1" height="1" fill="rgba(3, 5, 15, 0.5)" />
     </pattern>
 
-    <!-- Small tiling pattern for stars -->
-    <pattern id="stars" width="16" height="16" patternUnits="userSpaceOnUse">
-      <!-- white stars -->
-      <rect x="2"  y="3"  width="0.4" height="0.4" fill="#f5f7ff" />
-      <rect x="10" y="12" width="0.4" height="0.4" fill="#f5f7ff" />
-      <rect x="7"  y="7"  width="0.4" height="0.4" fill="#f5f7ff" />
-      <!-- blue stars -->
-      <rect x="5"  y="1"  width="0.4" height="0.4" fill="#4fb1ff" />
-      <rect x="13" y="5"  width="0.4" height="0.4" fill="#3d7bff" />
-      <rect x="1"  y="11" width="0.4" height="0.4" fill="#4fb1ff" />
+    <!-- Secondary smaller grain pattern -->
+    <pattern id="finegrain" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect x="2" y="1" width="1" height="1" fill="rgba(40, 45, 70, 0.2)" />
+      <rect x="9" y="3" width="1" height="1" fill="rgba(40, 45, 70, 0.15)" />
+      <rect x="14" y="6" width="1" height="1" fill="rgba(40, 45, 70, 0.2)" />
+      <rect x="5" y="8" width="1" height="1" fill="rgba(40, 45, 70, 0.18)" />
+      <rect x="11" y="11" width="1" height="1" fill="rgba(40, 45, 70, 0.2)" />
+      <rect x="1" y="13" width="1" height="1" fill="rgba(40, 45, 70, 0.15)" />
+      <rect x="7" y="15" width="1" height="1" fill="rgba(40, 45, 70, 0.2)" />
+      <rect x="13" y="9" width="1" height="1" fill="rgba(40, 45, 70, 0.18)" />
+      <rect x="4" y="5" width="1" height="1" fill="rgba(55, 50, 85, 0.15)" />
+      <rect x="10" y="14" width="1" height="1" fill="rgba(55, 50, 85, 0.12)" />
+      <rect x="15" y="2" width="1" height="1" fill="rgba(55, 50, 85, 0.15)" />
+    </pattern>
+
+    <!-- Subtle scanlines for retro feel -->
+    <pattern id="scanlines" width="1" height="4" patternUnits="userSpaceOnUse">
+      <rect x="0" y="0" width="1" height="1" fill="rgba(255,255,255,0.008)" />
+      <rect x="0" y="2" width="1" height="1" fill="rgba(0,0,0,0.015)" />
     </pattern>
   </defs>
 
-  <!-- Apply scanlines -->
-  <rect width="160" height="90" fill="url(#scanlines)" />
+  <!-- Apply speckle texture -->
+  <rect width="320" height="180" fill="url(#speckles)" />
+  
+  <!-- Apply fine grain overlay -->
+  <rect width="320" height="180" fill="url(#finegrain)" />
 
-  <!-- Apply stars -->
-  <rect width="160" height="90" fill="url(#stars)" />
+  <!-- Apply subtle scanlines -->
+  <rect width="320" height="180" fill="url(#scanlines)" />
 </svg>

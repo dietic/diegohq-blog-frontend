@@ -54,7 +54,7 @@
     gap: 0.5rem;
     overflow-x: auto;
     padding-left: 0.5rem;
-    
+
     // Hide scrollbar
     &::-webkit-scrollbar {
       display: none;
@@ -85,8 +85,9 @@
       background: var(--window-primary-bg);
       color: black;
       border: 2px solid var(--window-primary-border);
-      box-shadow: inset 1px 1px 0px rgba(255, 255, 255, 0.5), 
-                  2px 2px 0px rgba(0, 0, 0, 0.2);
+      box-shadow:
+        inset 1px 1px 0px rgba(255, 255, 255, 0.5),
+        2px 2px 0px rgba(0, 0, 0, 0.2);
     }
   }
 
