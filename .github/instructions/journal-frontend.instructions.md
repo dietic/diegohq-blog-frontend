@@ -18,12 +18,14 @@ A gamified programming blog styled as a retro Game Boy Advance (GBA) operating s
 **Tech Stack:**
 
 - **Frontend:** Next.js 16+ (App Router)
-- **CMS:** Keystatic (Git-based, Markdown)
+- **CMS:** Custom CMS (Git-based MDX with Zod schemas) - see `planning/CUSTOM_CMS.md`
 - **Game Backend:** Python FastAPI (External API - not in this repo)
 - **Language:** TypeScript (Strict Mode)
 - **React:** 19+ (Functional Components only)
 - **Window Management:** `react-rnd`
-- **Styling:** SCSS Modules (`.module.scss`)
+- **MDX Processing:** `next-mdx-remote` + `gray-matter`
+- **Schema Validation:** Zod
+- **Styling:** Plain SCSS (No CSS Modules, No Tailwind)
 - **Testing:** Vitest + Storybook
 - **Package Manager:** `pnpm`
 
@@ -40,27 +42,32 @@ diegohq-blog-frontend/
 │   ├── THEMING_AND_AESTHETICS.md # Visual & audio design rules
 │   ├── GAMIFICATION_MECHANICS.md # XP, levels, quests, items
 │   ├── CONTENT_STRATEGY.md      # How posts integrate with gameplay
+│   ├── CUSTOM_CMS.md            # Custom CMS architecture (IMPORTANT)
 │   ├── MVP_ROLLOUT_PLAN.md      # Phased development approach
 │   ├── MIGRATION_GUIDE.md       # Tailwind → SCSS migration details
 │   ├── todo.md                  # Current task list
 │   └── AGENT_INSTRUCTIONS.md    # THIS FILE
+├── content/                     # CMS Content (Git-tracked)
+│   ├── posts/                   # MDX journal entries
+│   ├── quests/                  # Quest JSON files
+│   └── items/                   # Item JSON files
 ├── src/
 │   ├── app/
 │   │   ├── fonts.ts             # next/font definitions
-│   │   ├── globals.css          # Global styles (being migrated)
-│   │   ├── theme.css            # CSS variables (TO BE CREATED)
+│   │   ├── globals.css          # Global styles
+│   │   ├── theme.css            # CSS variables
 │   │   ├── layout.tsx           # Root layout
-│   │   └── page.tsx             # Home page (Desktop)
-│   ├── components/              # (TARGET - move components here)
+│   │   ├── page.tsx             # Home page (Desktop)
+│   │   └── admin/               # Admin interface (protected)
+│   ├── components/              # UI components
 │   ├── hooks/                   # Custom React hooks
-│   ├── lib/                     # Utilities, API clients
-│   ├── styles/                  # Shared SCSS (variables, mixins)
-│   └── stories/components/      # CURRENT component location (Storybook)
-│       ├── Button/
-│       ├── Desktop/
-│       ├── DesktopIcon/
-│       ├── Navbar/
-│       └── Window/
+│   ├── lib/
+│   │   └── content/             # CMS Content API
+│   │       ├── schemas/         # Zod schemas (post, quest, item)
+│   │       ├── api/             # Content fetching functions
+│   │       ├── actions/         # Server Actions for CRUD
+│   │       └── utils/           # MDX parsing, reading time
+│   └── styles/                  # Shared SCSS (variables, mixins)
 ├── public/
 │   ├── desktop-icons/           # Pixel art icons
 │   ├── background.svg           # Desktop background
@@ -105,9 +112,9 @@ export default function Window(props: any) { ... }
 
 ### 3. Styling
 
-- **SCSS Modules:** Use `.module.scss` files
+- **Plain SCSS:** Use `.scss` files (NOT `.module.scss`)
 - **CSS Variables:** Reference from `theme.css` (e.g., `var(--window-primary-bg)`)
-- **BEM-like naming:** `hq-component--element` or `hq-component__modifier`
+- **BEM naming:** `diegohq-component__element--modifier`
 - **Pixel Art CSS:** Add `image-rendering: pixelated;` to all icons/images
 
 ### 4. File Structure (Co-location)
@@ -117,7 +124,7 @@ Each component lives in its own folder:
 ```
 src/components/ComponentName/
 ├── ComponentName.tsx
-├── ComponentName.module.scss
+├── ComponentName.scss
 ├── ComponentName.stories.tsx
 └── ComponentName.test.tsx
 ```
@@ -299,11 +306,42 @@ Reference `planning/todo.md` for the full list. Key priorities:
 1. Enhance `WindowContext` with: `openWindows`, `activeWindowId`, `minimizedWindows`
 2. Implement: `openWindow(id, component)`, `closeWindow(id)`, `focusWindow(id)`
 
-### 4. CMS & Content
+### 4. Custom CMS & Content
 
-1. Install Keystatic (`@keystatic/core`, `@keystatic/next`)
-2. Create `keystatic.config.ts`
-3. Create Journal component to list and render posts
+> **Reference:** See `planning/CUSTOM_CMS.md` for full architecture details.
+
+1. **Content Directory Structure:**
+   - `content/desktop/icons.json` — Desktop icon configuration
+   - `content/desktop/windows/` — Custom window MDX content
+   - `content/posts/` — MDX journal entries with frontmatter
+   - `content/quests/` — Quest definitions (JSON)
+   - `content/items/` — Item definitions (JSON)
+
+2. **Content Schemas (Zod):**
+   - `src/lib/content/schemas/desktop-icon.ts` — DesktopIconSchema, WindowTypeSchema
+   - `src/lib/content/schemas/window.ts` — WindowContentFrontmatterSchema
+   - `src/lib/content/schemas/post.ts` — PostFrontmatterSchema
+   - `src/lib/content/schemas/quest.ts` — QuestSchema
+   - `src/lib/content/schemas/item.ts` — ItemSchema
+
+3. **Content API:**
+   - `src/lib/content/api/desktop.ts` — getDesktopIcons, getVisibleDesktopIcons, getWindowContent
+   - `src/lib/content/api/posts.ts` — getAllPosts, getPostBySlug, getAccessiblePosts
+   - `src/lib/content/api/quests.ts` — getAllQuests, getQuestById
+   - `src/lib/content/api/items.ts` — getAllItems, getItemById
+
+4. **Admin Interface:**
+   - `/admin` route (protected) for content management
+   - `/admin/desktop` — Desktop icon management with visual grid editor
+   - `/admin/desktop/windows` — Custom window content management
+   - Server Actions for CRUD operations
+   - MDX preview for posts and custom windows
+
+5. **MDX Components:**
+   - `QuestCard` — Embed quests in posts
+   - `Callout` — Info, warning, tip boxes
+   - `CodeBlock` — Syntax highlighted code
+   - `ItemGate` — Inline gated content
 
 ---
 
@@ -325,7 +363,7 @@ pnpm test       # Run Vitest
 1. Create folder: `src/components/ComponentName/`
 2. Create files:
    - `ComponentName.tsx` (component logic)
-   - `ComponentName.module.scss` (styles)
+   - `ComponentName.scss` (styles - plain SCSS, not modules)
    - `ComponentName.stories.tsx` (Storybook)
    - `ComponentName.test.tsx` (tests - optional for MVP)
 
@@ -335,20 +373,20 @@ Example template:
 // ComponentName.tsx
 'use client'; // Only if needed
 
-import styles from './ComponentName.module.scss';
+import './ComponentName.scss';
 
 interface ComponentNameProps {
   // Define props
 }
 
 export const ComponentName = ({ ...props }: ComponentNameProps) => {
-  return <div className={styles.componentName}>{/* Content */}</div>;
+  return <div className="diegohq-component-name">{/* Content */}</div>;
 };
 ```
 
 ```scss
-// ComponentName.module.scss
-.componentName {
+// ComponentName.scss
+.diegohq-component-name {
   // Styles using CSS variables
   background: var(--window-primary-bg);
   padding: var(--space-4);
@@ -463,16 +501,17 @@ The Python FastAPI backend handles:
 
 ## 📚 Quick Reference Links
 
-| Document                    | Purpose                      |
-| --------------------------- | ---------------------------- |
-| `PROJECT_OVERVIEW.md`       | Vision, mission, core loop   |
-| `FEATURES.md`               | Complete feature list        |
-| `TECHNICAL_STANDARDS.md`    | **MUST READ** - Coding rules |
-| `THEMING_AND_AESTHETICS.md` | Visual design, colors, fonts |
-| `GAMIFICATION_MECHANICS.md` | XP, levels, quests, items    |
-| `MVP_ROLLOUT_PLAN.md`       | Development phases           |
-| `MIGRATION_GUIDE.md`        | Tailwind → SCSS migration    |
-| `todo.md`                   | Current task list            |
+| Document                    | Purpose                                    |
+| --------------------------- | ------------------------------------------ |
+| `PROJECT_OVERVIEW.md`       | Vision, mission, core loop                 |
+| `FEATURES.md`               | Complete feature list                      |
+| `TECHNICAL_STANDARDS.md`    | **MUST READ** - Coding rules               |
+| `THEMING_AND_AESTHETICS.md` | Visual design, colors, fonts               |
+| `GAMIFICATION_MECHANICS.md` | XP, levels, quests, items                  |
+| `CUSTOM_CMS.md`             | **CMS Architecture** - Schemas, API, Admin |
+| `MVP_ROLLOUT_PLAN.md`       | Development phases                         |
+| `MIGRATION_GUIDE.md`        | Tailwind → SCSS migration                  |
+| `todo.md`                   | Current task list                          |
 
 ---
 

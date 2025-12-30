@@ -6,18 +6,23 @@ This document outlines a phased approach to building "The Adventurer's Journal,"
 
 The goal of this phase is to build a functional, themed blog without the complex game mechanics. This allows for content creation to begin immediately.
 
--   **Key Objectives:**
-    -   [ ] Set up the Next.js project structure.
-    -   [ ] **CMS Setup:** Initialize **Refine** for managing Blog Posts and Projects.
-    -   [ ] **Backend Integration:** Create API Client to fetch Game Metadata from Backend (`/content/posts`).
-    -   [ ] Create the main "Desktop" layout.
-    -   [ ] **Preserve Color Palette:** Extract current Tailwind-based color variables to a standalone CSS file (`src/app/theme.css`) before removing Tailwind.
-    -   [ ] Implement the **Windowing System**: Use `react-rnd` for drag-and-drop window management.
-    -   [ ] Design and build the **Journal Window** to fetch posts from CMS/Backend.
-    -   [ ] Create the basic visual assets in the chosen pixel-art style (icons, window frames).
-    -   [ ] Establish the core CSS/SCSS for the retro theme (refactoring existing components `Desktop`, `Window`, `Navbar`, etc.).
--   **Gamification:** None in this phase. The focus is purely on the user interface and content delivery.
--   **Outcome:** A visually unique blog powered by Refine (Admin) and Custom Backend (Data).
+- **Key Objectives:**
+  - [ ] Set up the Next.js project structure.
+  - [ ] **Custom CMS Setup:** Build file-based CMS with MDX content and Zod schemas (see `CUSTOM_CMS.md`).
+    - Create `content/` directory structure (posts, quests, items).
+    - Implement content schemas with TypeScript + Zod validation.
+    - Build content API (`src/lib/content/`) for reading/parsing content.
+    - Create Admin interface at `/admin` for content management.
+  - [ ] **Backend Integration:** Create API Client to fetch Game Metadata from Backend (`/api/v1/users/me`).
+  - [ ] Create the main "Desktop" layout.
+  - [ ] **Preserve Color Palette:** Extract current Tailwind-based color variables to a standalone CSS file (`src/app/theme.css`) before removing Tailwind.
+  - [ ] Implement the **Windowing System**: Use `react-rnd` for drag-and-drop window management.
+  - [ ] Design and build the **Journal Window** to fetch posts from Custom CMS.
+  - [ ] Create MDX components for rich content (QuestCard, Callout, CodeBlock).
+  - [ ] Create the basic visual assets in the chosen pixel-art style (icons, window frames).
+  - [ ] Establish the core CSS/SCSS for the retro theme (refactoring existing components `Desktop`, `Window`, `Navbar`, etc.).
+- **Gamification:** None in this phase. The focus is purely on the user interface and content delivery.
+- **Outcome:** A visually unique blog powered by Custom CMS (Git-based MDX) with an integrated Admin UI.
 
 ---
 
@@ -25,16 +30,16 @@ The goal of this phase is to build a functional, themed blog without the complex
 
 Before diving into complex gamification, ensure the base experience is usable and welcoming.
 
--   **Key Objectives:**
-    -   [ ] Implement **Dual Interface Strategy**: Build the specific mobile layout ("Handheld Mode").
-    -   [ ] Create **"Tutorial Island" Onboarding**:
-        -   A first-time visitor sequence (BIOS boot-up animation).
-        -   A "Helper" sprite that guides the user to the Journal and Quest Log.
-    -   [ ] Implement **Accessibility Features**:
-        -   Add the "Reader Mode" toggle (switch to Sans-Serif font).
-        -   Ensure keyboard navigation works for windows and icons.
-    -   [ ] Add **Productivity Tools**: Implement the `Ctrl + K` "Spotlight" search.
--   **Outcome:** A highly accessible and responsive site that guides new users effectively.
+- **Key Objectives:**
+  - [ ] Implement **Dual Interface Strategy**: Build the specific mobile layout ("Handheld Mode").
+  - [ ] Create **"Tutorial Island" Onboarding**:
+    - A first-time visitor sequence (BIOS boot-up animation).
+    - A "Helper" sprite that guides the user to the Journal and Quest Log.
+  - [ ] Implement **Accessibility Features**:
+    - Add the "Reader Mode" toggle (switch to Sans-Serif font).
+    - Ensure keyboard navigation works for windows and icons.
+  - [ ] Add **Productivity Tools**: Implement the `Ctrl + K` "Spotlight" search.
+- **Outcome:** A highly accessible and responsive site that guides new users effectively.
 
 ---
 
@@ -42,16 +47,16 @@ Before diving into complex gamification, ensure the base experience is usable an
 
 This phase introduces the core feedback loop of earning XP and leveling up.
 
--   **Key Objectives:**
-    -   [ ] **Authentication:** Implement User Registration/Login using **Backend API**.
-    -   [ ] **User State:** Create `useUser` hook to fetch profile (`xp`, `level`) from Backend API.
-    -   [ ] Develop the **XP and Leveling System**.
-        -   The backend logic resides in the Backend API.
-    -   [ ] Grant XP for reading a post (call `POST /api/v1/game/read-post`).
-    -   [ ] Build the **User Profile Window** to display the user's level and XP bar.
-    -   [ ] Create the visual and audio feedback for leveling up.
-    -   [ ] Implement **Level-Gating**: Hide or lock posts based on the user's level (data from API).
--   **Outcome:** The blog now has a progression system with real user persistence.
+- **Key Objectives:**
+  - [ ] **Authentication:** Implement User Registration/Login using **Backend API**.
+  - [ ] **User State:** Create `useUser` hook to fetch profile (`xp`, `level`) from Backend API.
+  - [ ] Develop the **XP and Leveling System**.
+    - The backend logic resides in the Backend API.
+  - [ ] Grant XP for reading a post (call `POST /api/v1/game/read-post`).
+  - [ ] Build the **User Profile Window** to display the user's level and XP bar.
+  - [ ] Create the visual and audio feedback for leveling up.
+  - [ ] Implement **Level-Gating**: Hide or lock posts based on the user's level (data from API).
+- **Outcome:** The blog now has a progression system with real user persistence.
 
 ---
 
@@ -59,16 +64,16 @@ This phase introduces the core feedback loop of earning XP and leveling up.
 
 This phase completes the vision by adding the interactive quest and item systems.
 
--   **Key Objectives:**
-    -   [ ] **Data Integration:** Fetch Quests and Items from Backend API.
-    -   [ ] Design and build the **Quest System** at the end of posts.
-    -   [ ] Implement the **Inventory System**:
-        -   Render `user.inventory` from the API response.
-    -   [ ] Create a new tab in the User Profile window to show the inventory.
-    -   [ ] Implement **Item-Gating**: Lock posts behind challenges that require specific items (logic check against API data).
-    -   [ ] Build the **Quest Log Window** to track active and completed quests.
+- **Key Objectives:**
+  - [ ] **Data Integration:** Fetch Quests and Items from Backend API.
+  - [ ] Design and build the **Quest System** at the end of posts.
+  - [ ] Implement the **Inventory System**:
+    - Render `user.inventory` from the API response.
+  - [ ] Create a new tab in the User Profile window to show the inventory.
+  - [ ] Implement **Item-Gating**: Lock posts behind challenges that require specific items (logic check against API data).
+  - [ ] Build the **Quest Log Window** to track active and completed quests.
 
--   **Outcome:** The project is now a fully-featured, gamified journal as per the original vision.
+- **Outcome:** The project is now a fully-featured, gamified journal as per the original vision.
 
 ---
 
@@ -76,9 +81,9 @@ This phase completes the vision by adding the interactive quest and item systems
 
 After the core experience is complete, these features can be added to enhance immersion and user retention.
 
--   **Potential Features:**
-    -   [ ] Add background music and sound effects with volume controls.
-    -   [ ] Create more complex, multi-step **Challenges**.
-    -   [ ] Add a "Stats" or "Achievements" page to the user profile.
-    -   [ ] Implement a backend with a database to persist user data across devices.
-    -   [ ] Add animations and visual flair to UI interactions.
+- **Potential Features:**
+  - [ ] Add background music and sound effects with volume controls.
+  - [ ] Create more complex, multi-step **Challenges**.
+  - [ ] Add a "Stats" or "Achievements" page to the user profile.
+  - [ ] Implement a backend with a database to persist user data across devices.
+  - [ ] Add animations and visual flair to UI interactions.

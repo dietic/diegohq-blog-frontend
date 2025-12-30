@@ -14,11 +14,13 @@ A gamified programming blog styled as a retro Game Boy Advance (GBA) operating s
 **Tech Stack:**
 
 - **Frontend:** Next.js 16+ (App Router)
-- **CMS/Admin:** Refine (Admin Interface)
-- **Game Backend:** Node.js / Custom Backend (connected via Refine Data Provider)
+- **CMS:** Custom CMS (Git-based MDX with Zod schemas) - see `planning/CUSTOM_CMS.md`
+- **Game Backend:** Python FastAPI (External API - handles auth, XP, quests, items)
 - **Language:** TypeScript (Strict Mode)
 - **React:** 19+ (Functional Components only)
 - **Window Management:** `react-rnd`
+- **MDX Processing:** `next-mdx-remote` + `gray-matter`
+- **Schema Validation:** Zod
 - **Styling:** Plain SCSS (Global Scope, BEM Naming)
 - **Testing:** Vitest + Storybook
 - **Package Manager:** `pnpm`
@@ -36,27 +38,32 @@ diegohq-blog-frontend/
 │   ├── THEMING_AND_AESTHETICS.md # Visual & audio design rules
 │   ├── GAMIFICATION_MECHANICS.md # XP, levels, quests, items
 │   ├── CONTENT_STRATEGY.md      # How posts integrate with gameplay
+│   ├── CUSTOM_CMS.md            # Custom CMS architecture (IMPORTANT)
 │   ├── MVP_ROLLOUT_PLAN.md      # Phased development approach
 │   ├── MIGRATION_GUIDE.md       # Tailwind → Plain SCSS migration details
 │   ├── todo.md                  # Current task list
 │   └── AGENT_INSTRUCTIONS.md    # THIS FILE
+├── content/                     # CMS Content (Git-tracked)
+│   ├── posts/                   # MDX journal entries
+│   ├── quests/                  # Quest JSON files
+│   └── items/                   # Item JSON files
 ├── src/
 │   ├── app/
 │   │   ├── fonts.ts             # next/font definitions
-│   │   ├── globals.css          # Global styles (being migrated)
-│   │   ├── theme.css            # CSS variables (TO BE CREATED)
+│   │   ├── globals.css          # Global styles
+│   │   ├── theme.css            # CSS variables
 │   │   ├── layout.tsx           # Root layout
-│   │   └── page.tsx             # Home page (Desktop)
-│   ├── components/              # (TARGET - move components here)
+│   │   ├── page.tsx             # Home page (Desktop)
+│   │   └── admin/               # Admin interface (protected)
+│   ├── components/              # UI components
 │   ├── hooks/                   # Custom React hooks
-│   ├── lib/                     # Utilities, API clients
-│   ├── styles/                  # Shared SCSS (variables, mixins)
-│   └── stories/components/      # CURRENT component location (Storybook)
-│       ├── Button/
-│       ├── Desktop/
-│       ├── DesktopIcon/
-│       ├── Navbar/
-│       └── Window/
+│   ├── lib/
+│   │   └── content/             # CMS Content API
+│   │       ├── schemas/         # Zod schemas (post, quest, item)
+│   │       ├── api/             # Content fetching functions
+│   │       ├── actions/         # Server Actions for CRUD
+│   │       └── utils/           # MDX parsing, reading time
+│   └── styles/                  # Shared SCSS (variables, mixins)
 ├── public/
 │   ├── desktop-icons/           # Pixel art icons
 │   ├── background.svg           # Desktop background
@@ -290,16 +297,42 @@ Reference `planning/todo.md` for the full list. Key priorities:
 3. **Navbar:** Refactor for SCSS modules, add open windows list, Start button
 4. **Window:** Ensure contained drag (can't go off-screen), window focus management
 
-### 3. Window Management System
+### 4. Custom CMS & Content
 
-1. Enhance `WindowContext` with: `openWindows`, `activeWindowId`, `minimizedWindows`
-2. Implement: `openWindow(id, component)`, `closeWindow(id)`, `focusWindow(id)`
+> **Reference:** See `planning/CUSTOM_CMS.md` for full architecture details.
 
-### 4. CMS & Content
+1. **Content Directory Structure:**
+   - `content/desktop/icons.json` — Desktop icon configuration
+   - `content/desktop/windows/` — Custom window MDX content
+   - `content/posts/` — MDX journal entries with frontmatter
+   - `content/quests/` — Quest definitions (JSON)
+   - `content/items/` — Item definitions (JSON)
 
-1. Install Refine (`@refinedev/core`, etc.)
-2. Configure Refine Data Provider
-3. Create Admin Dashboard for managing content
+2. **Content Schemas (Zod):**
+   - `src/lib/content/schemas/desktop-icon.ts` — DesktopIconSchema, WindowTypeSchema
+   - `src/lib/content/schemas/window.ts` — WindowContentFrontmatterSchema
+   - `src/lib/content/schemas/post.ts` — PostFrontmatterSchema
+   - `src/lib/content/schemas/quest.ts` — QuestSchema
+   - `src/lib/content/schemas/item.ts` — ItemSchema
+
+3. **Content API:**
+   - `src/lib/content/api/desktop.ts` — getDesktopIcons, getVisibleDesktopIcons, getWindowContent
+   - `src/lib/content/api/posts.ts` — getAllPosts, getPostBySlug, getAccessiblePosts
+   - `src/lib/content/api/quests.ts` — getAllQuests, getQuestById
+   - `src/lib/content/api/items.ts` — getAllItems, getItemById
+
+4. **Admin Interface:**
+   - `/admin` route (protected) for content management
+   - `/admin/desktop` — Desktop icon management with visual grid editor
+   - `/admin/desktop/windows` — Custom window content management
+   - Server Actions for CRUD operations
+   - MDX preview for posts and custom windows
+
+5. **MDX Components:**
+   - `QuestCard` — Embed quests in posts
+   - `Callout` — Info, warning, tip boxes
+   - `CodeBlock` — Syntax highlighted code
+   - `ItemGate` — Inline gated content
 
 ---
 
@@ -461,16 +494,16 @@ The Python FastAPI backend handles:
 
 ## 📚 Quick Reference Links
 
-| Document                    | Purpose                      |
-| --------------------------- | ---------------------------- |
-| `PROJECT_OVERVIEW.md`       | Vision, mission, core loop   |
-| `FEATURES.md`               | Complete feature list        |
-| `TECHNICAL_STANDARDS.md`    | **MUST READ** - Coding rules |
-| `THEMING_AND_AESTHETICS.md` | Visual design, colors, fonts |
-| `GAMIFICATION_MECHANICS.md` | XP, levels, quests, items    |
-| `MVP_ROLLOUT_PLAN.md`       | Development phases           |
-| `MIGRATION_GUIDE.md`        | Tailwind → Plain SCSS migration    |
-| `todo.md`                   | Current task list            |
+| Document                    | Purpose                         |
+| --------------------------- | ------------------------------- |
+| `PROJECT_OVERVIEW.md`       | Vision, mission, core loop      |
+| `FEATURES.md`               | Complete feature list           |
+| `TECHNICAL_STANDARDS.md`    | **MUST READ** - Coding rules    |
+| `THEMING_AND_AESTHETICS.md` | Visual design, colors, fonts    |
+| `GAMIFICATION_MECHANICS.md` | XP, levels, quests, items       |
+| `MVP_ROLLOUT_PLAN.md`       | Development phases              |
+| `MIGRATION_GUIDE.md`        | Tailwind → Plain SCSS migration |
+| `todo.md`                   | Current task list               |
 
 ---
 

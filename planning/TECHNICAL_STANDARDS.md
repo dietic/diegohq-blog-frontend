@@ -7,11 +7,13 @@ This document serves as the "source of truth" for all development on the **Diego
 ## 1. Tech Stack & Versioning
 
 - **Frontend:** Next.js 16+ (App Router).
-- **Content CMS:** Refine (Admin Interface).
-- **Game Backend:** Custom Node.js Backend (or chosen stack).
+- **Content CMS:** Custom CMS (Git-based MDX files with Zod schemas). See `planning/CUSTOM_CMS.md`.
+- **Game Backend:** Python FastAPI (External API - handles auth, XP, quests, items).
 - **Language:** TypeScript (Strict Mode).
 - **Library:** React 19+ (Functional Components only).
 - **Window Management:** `react-rnd`.
+- **MDX Processing:** `next-mdx-remote` + `gray-matter`.
+- **Schema Validation:** Zod.
 - **Styling:** Plain SCSS (No CSS Modules, No Tailwind). Global scope with BEM naming convention recommended.
 - **Testing:** Vitest (Unit) + Storybook (Component Isolation).
 - **Package Manager:** `pnpm`.
