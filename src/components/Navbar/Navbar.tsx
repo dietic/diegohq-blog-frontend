@@ -7,7 +7,13 @@ import './Navbar.scss';
 export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const { openWindows, activeWindowId, focusWindow, minimizeWindow } = useWindowManager();
+  const {
+    openWindows,
+    activeWindowId,
+    focusWindow,
+    minimizeWindow,
+    minimizeAllWindows,
+  } = useWindowManager();
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     month: 'short',
@@ -42,7 +48,7 @@ export default function Navbar() {
     <div className="hq-navbar">
       {/* 1. Start Button Area */}
       <div className="hq-navbar__start">
-        <button className="hq-navbar__start-btn">
+        <button className="hq-navbar__start-btn" onClick={minimizeAllWindows}>
           <Image
             src="/logo-journal.png"
             alt="Journal Logo"

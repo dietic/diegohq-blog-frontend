@@ -17,6 +17,7 @@ interface WindowContextType {
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
+  minimizeAllWindows: () => void;
 }
 
 const WindowContext = createContext<WindowContextType>({
@@ -26,6 +27,7 @@ const WindowContext = createContext<WindowContextType>({
   closeWindow: () => {},
   focusWindow: () => {},
   minimizeWindow: () => {},
+  minimizeAllWindows: () => {},
 });
 
 export const WindowContextProvider = ({ children }: { children: ReactNode }) => {
@@ -61,12 +63,22 @@ export const WindowContextProvider = ({ children }: { children: ReactNode }) => 
     setOpenWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: false } : w));
   }, []);
 
-  const minimizeWindow = useCallback((id: string) => {
-    setOpenWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: true } : w));
+  const minimizeWindow = useCallback(
+    (id: string) => {
+      setOpenWindows((prev) =>
+        prev.map((w) => (w.id === id ? { ...w, isMinimized: true } : w))
+      );
     if (activeWindowId === id) {
       setActiveWindowId(null);
     }
-  }, [activeWindowId]);
+    },
+    [activeWindowId]
+  );
+
+  const minimizeAllWindows = useCallback(() => {
+    setOpenWindows((prev) => prev.map((w) => ({ ...w, isMinimized: true })));
+    setActiveWindowId(null);
+  }, []);
 
   return (
     <WindowContext.Provider
@@ -77,6 +89,7 @@ export const WindowContextProvider = ({ children }: { children: ReactNode }) => 
         closeWindow,
         focusWindow,
         minimizeWindow,
+        minimizeAllWindows,
       }}
     >
       {children}
