@@ -1,7 +1,6 @@
 import Desktop from '@/components/Desktop/Desktop';
 
 export default function Home() {
-  // Reconstructing the dummy data structure based on the original component props.
   const dummyIcons = [
     {
       icon: '/desktop-icons/chest.png',

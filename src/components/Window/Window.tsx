@@ -36,7 +36,6 @@ export const Window = ({
     height: 600,
   });
 
-  // Store the state before maximizing to restore it later
   const [preMaximizedState, setPreMaximizedState] = useState<{
     x: number;
     y: number;
@@ -52,7 +51,6 @@ export const Window = ({
       const newHeight = window.innerHeight;
       setViewportSize({ width: newWidth, height: newHeight });
 
-      // If maximized, update the window size to match viewport
       if (isMaximized) {
         setWindowState((prev) => ({
           ...prev,
@@ -71,7 +69,7 @@ export const Window = ({
         window.removeEventListener('resize', handleResize);
       }
     };
-  }, [isMaximized]); // Re-bind/check when isMaximized changes to ensure sync
+  }, [isMaximized]);
 
   const handleClose = () => {
     setIsClosed(true);
@@ -91,11 +89,9 @@ export const Window = ({
 
   const handleMaximize = () => {
     if (isMaximized) {
-      // Restore
       if (preMaximizedState) {
         setWindowState(preMaximizedState);
       } else {
-        // Fallback if no pre-state
         setWindowState((prev) => ({
           ...prev,
           width: 500,
@@ -105,7 +101,6 @@ export const Window = ({
         }));
       }
     } else {
-      // Maximize
       setPreMaximizedState(windowState);
       setWindowState({
         x: 0,
@@ -125,7 +120,6 @@ export const Window = ({
       style={style}
       onMouseDown={onMouseDown}
       dragHandleClassName="hq-window--header"
-      // Directly use windowState. Rnd is fully controlled here.
       size={{ width: windowState.width, height: windowState.height }}
       position={{ x: windowState.x, y: windowState.y }}
       onDragStop={(e, d) => {

@@ -39,8 +39,6 @@ export default function Navbar() {
   const minutes = currentTime.getMinutes();
 
   const handleTaskClick = (winId: string) => {
-    // If clicking the active window (that is NOT minimized), minimize it.
-    // Otherwise (if inactive OR minimized), focus/restore it.
     const win = openWindows.find((w) => w.id === winId);
     if (activeWindowId === winId && !win?.isMinimized) {
       minimizeWindow(winId);
@@ -51,7 +49,6 @@ export default function Navbar() {
 
   return (
     <div className="hq-navbar">
-      {/* 1. Start Button Area */}
       <div className="hq-navbar__start">
         <button className="hq-navbar__start-btn" onClick={minimizeAllWindows}>
           <Image
@@ -65,7 +62,6 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* 2. Open Windows List */}
       <div className="hq-navbar__tasks">
         {openWindows.map((win) => (
           <button
@@ -91,7 +87,6 @@ export default function Navbar() {
         ))}
       </div>
 
-      {/* 3. System Tray (Clock) */}
       <div className="hq-navbar__tray">
         <div className="hq-navbar__tray-date" suppressHydrationWarning>
           {mounted && currentTime.toLocaleDateString(undefined, dateOptions)}

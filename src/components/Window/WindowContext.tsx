@@ -46,10 +46,8 @@ export const WindowContextProvider = ({
 
   const openWindow = useCallback((window: WindowInstance) => {
     setOpenWindows((prev) => {
-      // Check if already open
       const exists = prev.find((w) => w.id === window.id);
       if (exists) {
-        // Just focus it if it exists
         return prev.map((w) =>
           w.id === window.id ? { ...w, isMinimized: false } : w
         );
@@ -65,7 +63,6 @@ export const WindowContextProvider = ({
         const remaining = prev.filter((w) => w.id !== id);
         return remaining;
       });
-      // If we closed the active window, try to focus the next one
       if (activeWindowId === id) {
         setActiveWindowId(null);
       }
