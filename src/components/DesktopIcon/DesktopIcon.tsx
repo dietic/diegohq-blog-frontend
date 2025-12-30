@@ -25,8 +25,8 @@ export default function DesktopIcon({
       enableResizing={false}
       default={{ x: initialX, y: initialY, width: 90, height: 80 }}
     >
-      <div 
-        className="hq-desktop-icon__container" 
+      <div
+        className="hq-desktop-icon__container"
         onDoubleClick={onDoubleClick}
         style={{ width: '100%', height: '100%' }}
       >

@@ -1,11 +1,17 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import { useWindowManager } from '../Window/WindowContext';
 import './Navbar.scss';
 
+const emptySubscribe = () => () => {};
+
 export default function Navbar() {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(
+    emptySubscribe,
+    () => true,
+    () => false
+  );
   const [currentTime, setCurrentTime] = useState(new Date());
   const {
     openWindows,
@@ -22,7 +28,6 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    setMounted(true);
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -66,12 +71,20 @@ export default function Navbar() {
           <button
             key={win.id}
             className={`hq-navbar__task-item ${
-              activeWindowId === win.id && !win.isMinimized ? 'hq-navbar__task-item--active' : ''
+              activeWindowId === win.id && !win.isMinimized
+                ? 'hq-navbar__task-item--active'
+                : ''
             }`}
             onClick={() => handleTaskClick(win.id)}
           >
             {win.icon && (
-              <Image src={win.icon} alt="" width={16} height={16} className="mr-2" />
+              <Image
+                src={win.icon}
+                alt=""
+                width={16}
+                height={16}
+                className="mr-2"
+              />
             )}
             <span className="hq-navbar__task-text">{win.title}</span>
           </button>
@@ -86,7 +99,8 @@ export default function Navbar() {
         <div className="hq-navbar__tray-time" suppressHydrationWarning>
           {mounted && (
             <>
-              {hours}:{minutes < 10 ? '0' : ''}{minutes}
+              {hours}:{minutes < 10 ? '0' : ''}
+              {minutes}
             </>
           )}
         </div>

@@ -11,15 +11,24 @@ export interface DesktopProps {
 }
 
 export default function Desktop({ icons, children }: DesktopProps) {
-  const { openWindows, activeWindowId, closeWindow, focusWindow, openWindow, minimizeWindow } =
-    useWindowManager();
+  const {
+    openWindows,
+    activeWindowId,
+    closeWindow,
+    focusWindow,
+    openWindow,
+    minimizeWindow,
+  } = useWindowManager();
 
   const handleOpenTestWindow = (icon: DesktopIconProps) => {
     openWindow({
       id: icon.label.toLowerCase().replace(' ', '-'),
       title: icon.label,
       component: (
-        <div className="p-4" style={{ fontFamily: 'VT323', fontSize: '1.2rem' }}>
+        <div
+          className="p-4"
+          style={{ fontFamily: 'VT323', fontSize: '1.2rem' }}
+        >
           <h2 className="text-xl mb-4">Welcome to {icon.label}</h2>
           <p>This content is managed by the Window Manager.</p>
         </div>
@@ -45,7 +54,7 @@ export default function Desktop({ icons, children }: DesktopProps) {
               />
             );
           })}
-        
+
         {/* Render Open Windows */}
         {openWindows.map((win) => (
           <Window
@@ -63,7 +72,7 @@ export default function Desktop({ icons, children }: DesktopProps) {
             {win.component}
           </Window>
         ))}
-        
+
         {children}
       </div>
     </div>

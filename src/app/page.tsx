@@ -1,5 +1,4 @@
 import Desktop from '@/components/Desktop/Desktop';
-import { Window } from '@/components/Window/Window';
 
 export default function Home() {
   // Reconstructing the dummy data structure based on the original component props.

@@ -51,10 +51,14 @@ export const Window = ({
       const newWidth = window.innerWidth;
       const newHeight = window.innerHeight;
       setViewportSize({ width: newWidth, height: newHeight });
-      
+
       // If maximized, update the window size to match viewport
       if (isMaximized) {
-        setWindowState(prev => ({ ...prev, width: newWidth, height: newHeight }));
+        setWindowState((prev) => ({
+          ...prev,
+          width: newWidth,
+          height: newHeight,
+        }));
       }
     };
 
@@ -80,7 +84,7 @@ export const Window = ({
     } else {
       setIsMinimized(!isMinimized);
       if (!isMinimized && isMaximized) {
-        if (!onMinimize) setIsMaximized(false); 
+        if (!onMinimize) setIsMaximized(false);
       }
     }
   };
@@ -92,7 +96,13 @@ export const Window = ({
         setWindowState(preMaximizedState);
       } else {
         // Fallback if no pre-state
-        setWindowState(prev => ({ ...prev, width: 500, height: 600, x: 100, y: 50 }));
+        setWindowState((prev) => ({
+          ...prev,
+          width: 500,
+          height: 600,
+          x: 100,
+          y: 50,
+        }));
       }
     } else {
       // Maximize
@@ -101,7 +111,7 @@ export const Window = ({
         x: 0,
         y: 0,
         width: viewportSize.width || window.innerWidth,
-        height: viewportSize.height || window.innerHeight
+        height: viewportSize.height || window.innerHeight,
       });
     }
     setIsMaximized(!isMaximized);
@@ -115,17 +125,14 @@ export const Window = ({
       style={style}
       onMouseDown={onMouseDown}
       dragHandleClassName="hq-window--header"
-      
       // Directly use windowState. Rnd is fully controlled here.
       size={{ width: windowState.width, height: windowState.height }}
       position={{ x: windowState.x, y: windowState.y }}
-      
       onDragStop={(e, d) => {
         if (!isMinimized && !isMaximized) {
           setWindowState((prev) => ({ ...prev, x: d.x, y: d.y }));
         }
       }}
-      
       onResizeStop={(e, direction, ref, delta, position) => {
         setWindowState({
           width: parseInt(ref.style.width),
@@ -133,7 +140,6 @@ export const Window = ({
           ...position,
         });
       }}
-      
       disableDragging={isMaximized || isMinimized}
       enableResizing={!isMaximized && !isMinimized}
       className={`hq-window ${isMaximized ? 'hq-window--maximized' : ''} ${

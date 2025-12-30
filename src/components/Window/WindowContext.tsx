@@ -1,5 +1,11 @@
 'use client';
-import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useCallback,
+} from 'react';
 
 export interface WindowInstance {
   id: string;
@@ -30,7 +36,11 @@ const WindowContext = createContext<WindowContextType>({
   minimizeAllWindows: () => {},
 });
 
-export const WindowContextProvider = ({ children }: { children: ReactNode }) => {
+export const WindowContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const [openWindows, setOpenWindows] = useState<WindowInstance[]>([]);
   const [activeWindowId, setActiveWindowId] = useState<string | null>(null);
 
@@ -40,27 +50,34 @@ export const WindowContextProvider = ({ children }: { children: ReactNode }) => 
       const exists = prev.find((w) => w.id === window.id);
       if (exists) {
         // Just focus it if it exists
-        return prev.map(w => w.id === window.id ? { ...w, isMinimized: false } : w);
+        return prev.map((w) =>
+          w.id === window.id ? { ...w, isMinimized: false } : w
+        );
       }
       return [...prev, { ...window, isMinimized: false }];
     });
     setActiveWindowId(window.id);
   }, []);
 
-  const closeWindow = useCallback((id: string) => {
-    setOpenWindows((prev) => {
-      const remaining = prev.filter((w) => w.id !== id);
-      return remaining;
-    });
-    // If we closed the active window, try to focus the next one
-    if (activeWindowId === id) {
-      setActiveWindowId(null);
-    }
-  }, [activeWindowId]);
+  const closeWindow = useCallback(
+    (id: string) => {
+      setOpenWindows((prev) => {
+        const remaining = prev.filter((w) => w.id !== id);
+        return remaining;
+      });
+      // If we closed the active window, try to focus the next one
+      if (activeWindowId === id) {
+        setActiveWindowId(null);
+      }
+    },
+    [activeWindowId]
+  );
 
   const focusWindow = useCallback((id: string) => {
     setActiveWindowId(id);
-    setOpenWindows(prev => prev.map(w => w.id === id ? { ...w, isMinimized: false } : w));
+    setOpenWindows((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, isMinimized: false } : w))
+    );
   }, []);
 
   const minimizeWindow = useCallback(
@@ -68,9 +85,9 @@ export const WindowContextProvider = ({ children }: { children: ReactNode }) => 
       setOpenWindows((prev) =>
         prev.map((w) => (w.id === id ? { ...w, isMinimized: true } : w))
       );
-    if (activeWindowId === id) {
-      setActiveWindowId(null);
-    }
+      if (activeWindowId === id) {
+        setActiveWindowId(null);
+      }
     },
     [activeWindowId]
   );
