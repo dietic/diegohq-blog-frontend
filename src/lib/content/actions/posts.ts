@@ -7,10 +7,7 @@ import {
   fileExists,
   serializeMdx,
 } from '../utils';
-import {
-  PostFrontmatterSchema,
-  type PostFrontmatter,
-} from '../schemas/post';
+import { PostFrontmatterSchema, type PostFrontmatter } from '../schemas/post';
 
 const POSTS_DIR = getContentPath('posts');
 
@@ -34,7 +31,9 @@ const getPostFilename = (slug: string): string => {
   return `${POSTS_DIR}/${slug}.mdx`;
 };
 
-export const createPost = async (input: CreatePostInput): Promise<ActionResult> => {
+export const createPost = async (
+  input: CreatePostInput
+): Promise<ActionResult> => {
   try {
     // Validate frontmatter
     const validated = PostFrontmatterSchema.parse(input.frontmatter);
@@ -58,7 +57,9 @@ export const createPost = async (input: CreatePostInput): Promise<ActionResult> 
   }
 };
 
-export const updatePost = async (input: UpdatePostInput): Promise<ActionResult> => {
+export const updatePost = async (
+  input: UpdatePostInput
+): Promise<ActionResult> => {
   try {
     const filePath = getPostFilename(input.slug);
 

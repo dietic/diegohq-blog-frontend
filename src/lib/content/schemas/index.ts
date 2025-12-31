@@ -4,12 +4,7 @@ export {
   ContentPillarSchema,
   TargetLevelSchema,
 } from './post';
-export type {
-  Post,
-  PostFrontmatter,
-  ContentPillar,
-  TargetLevel,
-} from './post';
+export type { Post, PostFrontmatter, ContentPillar, TargetLevel } from './post';
 
 // Quest schemas
 export { QuestSchema, QuestTypeSchema, QuestDifficultySchema } from './quest';

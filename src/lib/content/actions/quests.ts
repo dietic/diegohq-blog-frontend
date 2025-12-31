@@ -1,6 +1,11 @@
 'use server';
 
-import { getContentPath, writeJsonFile, deleteFile, fileExists } from '../utils';
+import {
+  getContentPath,
+  writeJsonFile,
+  deleteFile,
+  fileExists,
+} from '../utils';
 import { QuestSchema, type Quest } from '../schemas/quest';
 
 const QUESTS_DIR = getContentPath('quests');

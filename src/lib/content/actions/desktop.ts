@@ -53,8 +53,7 @@ export const updateDesktopIcons = async (
   } catch (error) {
     return {
       success: false,
-      error:
-        error instanceof Error ? error.message : 'Failed to update icons',
+      error: error instanceof Error ? error.message : 'Failed to update icons',
     };
   }
 };
@@ -176,7 +175,10 @@ export const createWindowContent = async (
     const filePath = `${WINDOWS_DIR}/${validated.id}.mdx`;
 
     if (await fileExists(filePath)) {
-      return { success: false, error: 'Window content with this id already exists' };
+      return {
+        success: false,
+        error: 'Window content with this id already exists',
+      };
     }
 
     const mdxContent = serializeMdx(validated, input.content);
@@ -232,7 +234,9 @@ export const updateWindowContent = async (
   }
 };
 
-export const deleteWindowContent = async (id: string): Promise<ActionResult> => {
+export const deleteWindowContent = async (
+  id: string
+): Promise<ActionResult> => {
   try {
     const filePath = `${WINDOWS_DIR}/${id}.mdx`;
 

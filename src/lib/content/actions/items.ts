@@ -1,6 +1,11 @@
 'use server';
 
-import { getContentPath, writeJsonFile, deleteFile, fileExists } from '../utils';
+import {
+  getContentPath,
+  writeJsonFile,
+  deleteFile,
+  fileExists,
+} from '../utils';
 import { ItemSchema, type Item } from '../schemas/item';
 
 const ITEMS_DIR = getContentPath('items');

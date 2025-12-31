@@ -4,12 +4,7 @@
   "description": "Prove your understanding of Git basics by answering this question.",
   "prompt": "What is the command to save your changes to your local repository?",
   "type": "multiple-choice",
-  "options": [
-    "git push",
-    "git commit -m \"message\"",
-    "git save",
-    "git add ."
-  ],
+  "options": ["git push", "git commit -m \"message\"", "git save", "git add ."],
   "correctAnswer": "git commit -m \"message\"",
   "xpReward": 40,
   "itemReward": "map-to-cloud-kingdom",
