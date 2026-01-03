@@ -55,6 +55,7 @@ export interface PostCreate {
   quest_id?: string | null;
   meta_description?: string | null;
   og_image?: string | null;
+  icon?: string | null;
   published?: boolean;
   featured?: boolean;
 }
@@ -75,6 +76,7 @@ export interface PostUpdate {
   quest_id?: string | null;
   meta_description?: string | null;
   og_image?: string | null;
+  icon?: string | null;
   published?: boolean;
   featured?: boolean;
 }
@@ -96,6 +98,7 @@ export interface PostResponse {
   quest_id: string | null;
   meta_description: string | null;
   og_image: string | null;
+  icon: string | null;
   published: boolean;
   featured: boolean;
   reading_time: number;
@@ -115,6 +118,7 @@ export interface PostSummaryResponse {
   required_level: number | null;
   required_item: string | null;
   read_xp: number;
+  icon: string | null;
   published: boolean;
   featured: boolean;
   reading_time: number;

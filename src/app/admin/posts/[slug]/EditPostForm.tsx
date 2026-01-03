@@ -29,6 +29,7 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
     required_item: post.required_item || '',
     quest_id: post.quest_id || '',
     meta_description: post.meta_description || '',
+    icon: post.icon || '',
     published: post.published,
     featured: post.featured,
     content: post.content,
@@ -64,6 +65,7 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
         required_item: formData.required_item || null,
         quest_id: formData.quest_id || null,
         meta_description: formData.meta_description || null,
+        icon: formData.icon || null,
         published: formData.published,
         featured: formData.featured,
       };
@@ -290,6 +292,25 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                   placeholder="SEO description..."
                   maxLength={160}
                 />
+              </div>
+
+              <div className="form__group">
+                <label className="form__label">Icon</label>
+                <div className="input-group">
+                  <span className="input-group__prefix">/desktop-icons/</span>
+                  <input
+                    type="text"
+                    className="input input--with-prefix"
+                    value={formData.icon.replace('/desktop-icons/', '')}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        icon: e.target.value ? `/desktop-icons/${e.target.value}` : '',
+                      }))
+                    }
+                    placeholder="scroll.png"
+                  />
+                </div>
               </div>
 
               <div

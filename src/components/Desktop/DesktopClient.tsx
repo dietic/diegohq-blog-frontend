@@ -98,7 +98,7 @@ export function DesktopClient({
             onForceClose={() => forceCloseWindow(windowId)}
           />
         ),
-        icon: '/desktop-icons/scroll.png',
+        icon: post.icon || '/desktop-icons/mypc.png',
         initialMaximized: true,
       });
     },
@@ -125,7 +125,7 @@ export function DesktopClient({
             onForceClose={() => forceCloseWindow(windowId)}
           />
         ),
-        icon: '/desktop-icons/scroll.png',
+        icon: initialPost.icon || '/desktop-icons/mypc.png',
         initialMaximized: true,
       });
     }

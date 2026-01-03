@@ -24,6 +24,7 @@ export const NewPostPage = () => {
     requiredItem: '',
     questId: '',
     metaDescription: '',
+    icon: '',
     published: false,
     featured: false,
     content: '',
@@ -66,6 +67,7 @@ export const NewPostPage = () => {
         required_item: formData.requiredItem || null,
         quest_id: formData.questId || null,
         meta_description: formData.metaDescription || null,
+        icon: formData.icon || null,
         published: formData.published,
         featured: formData.featured,
       };
@@ -274,6 +276,25 @@ export const NewPostPage = () => {
                   placeholder="SEO description..."
                   maxLength={160}
                 />
+              </div>
+
+              <div className="form__group">
+                <label className="form__label">Icon</label>
+                <div className="input-group">
+                  <span className="input-group__prefix">/desktop-icons/</span>
+                  <input
+                    type="text"
+                    className="input input--with-prefix"
+                    value={formData.icon.replace('/desktop-icons/', '')}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        icon: e.target.value ? `/desktop-icons/${e.target.value}` : '',
+                      }))
+                    }
+                    placeholder="scroll.png"
+                  />
+                </div>
               </div>
 
               <div
