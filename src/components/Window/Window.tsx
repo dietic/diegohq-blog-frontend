@@ -139,6 +139,12 @@ export const Window = ({
 
   // Handle header mousedown - immediately restore from maximized before drag starts
   const handleHeaderMouseDown = (e: React.MouseEvent) => {
+    // Ignore clicks on buttons (window actions)
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('.hq-window__actions')) {
+      return;
+    }
+
     if (isMaximized) {
       const mouseX = e.clientX;
       const mouseY = e.clientY;
