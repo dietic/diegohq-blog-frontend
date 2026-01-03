@@ -11,10 +11,10 @@
   --button-primary-border: oklch(0.7066 0.1637 158.07);
 
   /* === WINDOW COLORS === */
-  --window-primary-bg: oklch(0.9861 0.0017 325.59);
-  --window-primary-border: oklch(0.2768 0 0);
+  --window-primary-bg: #1a1a2e;
+  --window-primary-border: #3f3f46;
   --window-primary-header: oklch(0.3739 0.0599 264.04);
-  --window-primary-header-foreground: oklch(0.9861 0.0017 325.59);
+  --window-primary-header-foreground: #e4e4e7;
   --window-primary-action-bg: oklch(0.5252 0.0599 264.04);
   --window-primary-action-bg--hover: oklch(0.5252 0.0599 264.04 / 40%);
 

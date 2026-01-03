@@ -14,6 +14,7 @@ export interface WindowInstance {
   icon?: string;
   isMinimized?: boolean;
   isMaximized?: boolean;
+  initialMaximized?: boolean;
 }
 
 interface WindowContextType {
