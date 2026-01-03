@@ -8,9 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@mdx-js/mdx": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
     "@nsmr/pixelart-react": "^2.0.0",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
@@ -30,6 +34,7 @@
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^4.1.2",
+    "@playwright/test": "^1.57.0",
     "@storybook/addon-a11y": "^10.0.7",
     "@storybook/addon-docs": "^10.0.7",
     "@storybook/addon-onboarding": "^10.0.7",
@@ -46,7 +51,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-storybook": "^10.0.7",
-    "playwright": "^1.56.1",
+    "playwright": "1.57.0",
     "prettier": "^3.6.2",
     "sass-embedded": "^1.93.3",
     "storybook": "^10.0.7",
