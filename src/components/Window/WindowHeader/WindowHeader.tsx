@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import './WindowHeader.scss';
 
 import { vt323 } from '../../../app/fonts';
@@ -10,6 +11,7 @@ export interface WindowHeaderProps {
   onMinimize?: () => void;
   onMaximize?: () => void;
   onClose?: () => void;
+  onMouseDown?: (e: React.MouseEvent) => void;
 }
 
 enum WindowAction {
@@ -65,15 +67,26 @@ export const WindowActionButtons = ({
 
 export const WindowHeader = ({
   windowTitle,
-  windowIcon = '🖥️',
+  windowIcon,
   showWindowActions = true,
   onMinimize,
   onMaximize,
   onClose,
+  onMouseDown,
 }: WindowHeaderProps) => {
   return (
-    <div className="hq-window--header">
-      <span className="hq-window--icon">{windowIcon}</span>
+    <div className="hq-window--header" onMouseDown={onMouseDown}>
+      {windowIcon && (
+        <span className="hq-window--icon">
+          <Image
+            src={windowIcon}
+            alt=""
+            width={32}
+            height={32}
+            style={{ imageRendering: 'pixelated' }}
+          />
+        </span>
+      )}
       <span className={`hq-window--title ${vt323.className}`}>
         {windowTitle}
       </span>
