@@ -1,8 +1,15 @@
 import Link from 'next/link';
-import { getAllPosts } from '@/lib/content';
+import { FileText } from 'lucide-react';
+import { getAllPosts } from '@/lib/api/services/posts';
+import type { PostResponse } from '@/lib/api/types';
 
 export const PostsPage = async () => {
-  const posts = await getAllPosts();
+  let posts: PostResponse[] = [];
+  try {
+    posts = await getAllPosts();
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+  }
 
   return (
     <div className="admin__content">
@@ -50,11 +57,11 @@ export const PostsPage = async () => {
                 </td>
                 <td>
                   <span className="badge badge--info">
-                    {post.contentPillar}
+                    {post.content_pillar}
                   </span>
                 </td>
-                <td>{post.targetLevel}</td>
-                <td>{post.readXp} XP</td>
+                <td>{post.target_level}</td>
+                <td>{post.read_xp} XP</td>
                 <td>
                   <span
                     className={`badge ${post.published ? 'badge--success' : 'badge--muted'}`}
@@ -71,7 +78,7 @@ export const PostsPage = async () => {
                   )}
                 </td>
                 <td style={{ color: '#71717a' }}>
-                  {new Date(post.date).toLocaleDateString()}
+                  {new Date(post.created_at).toLocaleDateString()}
                 </td>
                 <td>
                   <div className="data-table__actions">
@@ -90,7 +97,7 @@ export const PostsPage = async () => {
       ) : (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-state__icon">📝</div>
+            <div className="empty-state__icon"><FileText size={48} /></div>
             <h3 className="empty-state__title">No posts yet</h3>
             <p className="empty-state__description">
               Create your first journal entry to get started.

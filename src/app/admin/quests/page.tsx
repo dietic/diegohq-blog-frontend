@@ -1,8 +1,15 @@
 import Link from 'next/link';
-import { getAllQuests } from '@/lib/content';
+import { Swords } from 'lucide-react';
+import { getAllQuests } from '@/lib/api/services/quests';
+import type { QuestResponse } from '@/lib/api/types';
 
 export const QuestsPage = async () => {
-  const quests = await getAllQuests();
+  let quests: QuestResponse[] = [];
+  try {
+    quests = await getAllQuests();
+  } catch (error) {
+    console.error('Failed to fetch quests:', error);
+  }
 
   return (
     <div className="admin__content">
@@ -33,7 +40,7 @@ export const QuestsPage = async () => {
           </thead>
           <tbody>
             {quests.map((quest) => (
-              <tr key={quest.id}>
+              <tr key={quest.quest_id}>
                 <td>
                   <div>
                     <strong>{quest.name}</strong>
@@ -44,12 +51,12 @@ export const QuestsPage = async () => {
                         marginTop: '0.25rem',
                       }}
                     >
-                      {quest.id}
+                      {quest.quest_id}
                     </div>
                   </div>
                 </td>
                 <td>
-                  <span className="badge badge--info">{quest.type}</span>
+                  <span className="badge badge--info">{quest.quest_type}</span>
                 </td>
                 <td>
                   <span
@@ -64,22 +71,22 @@ export const QuestsPage = async () => {
                     {quest.difficulty}
                   </span>
                 </td>
-                <td>{quest.xpReward} XP</td>
-                <td style={{ color: quest.itemReward ? '#e4e4e7' : '#52525b' }}>
-                  {quest.itemReward || '—'}
+                <td>{quest.xp_reward} XP</td>
+                <td style={{ color: quest.item_reward ? '#e4e4e7' : '#52525b' }}>
+                  {quest.item_reward || '—'}
                 </td>
                 <td>
                   <Link
-                    href={`/admin/posts/${quest.hostPostSlug}`}
+                    href={`/admin/posts/${quest.host_post_slug}`}
                     style={{ color: '#3b82f6', textDecoration: 'none' }}
                   >
-                    {quest.hostPostSlug}
+                    {quest.host_post_slug}
                   </Link>
                 </td>
                 <td>
                   <div className="data-table__actions">
                     <Link
-                      href={`/admin/quests/${quest.id}`}
+                      href={`/admin/quests/${quest.quest_id}`}
                       className="btn btn--ghost btn--sm"
                     >
                       Edit
@@ -93,7 +100,7 @@ export const QuestsPage = async () => {
       ) : (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-state__icon">⚔️</div>
+            <div className="empty-state__icon"><Swords size={48} /></div>
             <h3 className="empty-state__title">No quests yet</h3>
             <p className="empty-state__description">
               Create challenges for your readers to complete.

@@ -1,5 +1,7 @@
 import Link from 'next/link';
-import { getAllItems } from '@/lib/content';
+import { Package } from 'lucide-react';
+import { getAllItems } from '@/lib/api/services/items';
+import type { ItemResponse } from '@/lib/api/types';
 
 const rarityColors: Record<string, string> = {
   common: 'badge--muted',
@@ -9,7 +11,12 @@ const rarityColors: Record<string, string> = {
 };
 
 export const ItemsPage = async () => {
-  const items = await getAllItems();
+  let items: ItemResponse[] = [];
+  try {
+    items = await getAllItems();
+  } catch (error) {
+    console.error('Failed to fetch items:', error);
+  }
 
   return (
     <div className="admin__content">
@@ -38,7 +45,7 @@ export const ItemsPage = async () => {
           </thead>
           <tbody>
             {items.map((item) => (
-              <tr key={item.id}>
+              <tr key={item.item_id}>
                 <td style={{ fontSize: '1.5rem' }}>{item.icon}</td>
                 <td>
                   <div>
@@ -50,7 +57,7 @@ export const ItemsPage = async () => {
                         marginTop: '0.25rem',
                       }}
                     >
-                      {item.id}
+                      {item.item_id}
                     </div>
                   </div>
                 </td>
@@ -65,7 +72,7 @@ export const ItemsPage = async () => {
                 <td>
                   <div className="data-table__actions">
                     <Link
-                      href={`/admin/items/${item.id}`}
+                      href={`/admin/items/${item.item_id}`}
                       className="btn btn--ghost btn--sm"
                     >
                       Edit
@@ -79,7 +86,7 @@ export const ItemsPage = async () => {
       ) : (
         <div className="card">
           <div className="empty-state">
-            <div className="empty-state__icon">🎒</div>
+            <div className="empty-state__icon"><Package size={48} /></div>
             <h3 className="empty-state__title">No items yet</h3>
             <p className="empty-state__description">
               Create collectible items for quests and content gating.

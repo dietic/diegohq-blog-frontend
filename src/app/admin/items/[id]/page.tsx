@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getItemById } from '@/lib/content';
+import { getItemById } from '@/lib/api/services/items';
 import { EditItemForm } from './EditItemForm';
 
 const rarityColors: Record<string, string> = {

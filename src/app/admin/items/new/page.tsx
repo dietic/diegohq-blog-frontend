@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createItem } from '@/lib/content/actions';
-import type { Item, ItemRarity } from '@/lib/content/schemas';
+import { createItem } from '@/lib/api/services/items';
+import type { ItemCreate, ItemRarity } from '@/lib/api/types';
 
 const rarities: ItemRarity[] = ['common', 'uncommon', 'rare', 'legendary'];
 
@@ -44,22 +44,22 @@ export const NewItemPage = () => {
     setLoading(true);
     setError(null);
 
-    const item: Item = {
-      id: formData.id,
-      name: formData.name,
-      description: formData.description,
-      icon: formData.icon,
-      rarity: formData.rarity,
-      flavorText: formData.flavorText || undefined,
-    };
+    try {
+      const itemData: ItemCreate = {
+        item_id: formData.id,
+        name: formData.name,
+        description: formData.description,
+        icon: formData.icon,
+        rarity: formData.rarity,
+        flavor_text: formData.flavorText || null,
+      };
 
-    const result = await createItem(item);
-    setLoading(false);
-
-    if (result.success) {
+      await createItem(itemData);
       router.push('/admin/items');
-    } else {
-      setError(result.error || 'Failed to create item');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create item');
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getQuestById } from '@/lib/content';
+import { getQuestById } from '@/lib/api/services/quests';
 import { EditQuestForm } from './EditQuestForm';
 
 interface EditQuestPageProps {
@@ -33,7 +33,7 @@ export const EditQuestPage = async ({ params }: EditQuestPageProps) => {
             className="badge badge--info"
             style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
           >
-            {quest.xpReward} XP
+            {quest.xp_reward} XP
           </span>
         </div>
       </div>

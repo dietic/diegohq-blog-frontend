@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { updateItem, deleteItem } from '@/lib/content/actions';
-import type { Item, ItemRarity } from '@/lib/content/schemas';
+import { updateItem, deleteItem } from '@/lib/api/services/items';
+import type { ItemResponse, ItemUpdate, ItemRarity } from '@/lib/api/types';
 
 const rarities: ItemRarity[] = ['common', 'uncommon', 'rare', 'legendary'];
 
 interface EditItemFormProps {
-  item: Item;
+  item: ItemResponse;
 }
 
 export const EditItemForm = ({ item }: EditItemFormProps) => {
@@ -22,8 +22,8 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
     name: item.name,
     description: item.description,
     icon: item.icon,
-    rarity: item.rarity,
-    flavorText: item.flavorText || '',
+    rarity: item.rarity as ItemRarity,
+    flavor_text: item.flavor_text || '',
   });
 
   useEffect(() => {
@@ -38,21 +38,22 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
     setLoading(true);
     setError(null);
 
-    const updates: Partial<Item> = {
-      name: formData.name,
-      description: formData.description,
-      icon: formData.icon,
-      rarity: formData.rarity,
-      flavorText: formData.flavorText || undefined,
-    };
+    try {
+      const updates: ItemUpdate = {
+        name: formData.name,
+        description: formData.description,
+        icon: formData.icon,
+        rarity: formData.rarity,
+        flavor_text: formData.flavor_text || null,
+      };
 
-    const result = await updateItem(item.id, updates);
-    setLoading(false);
-
-    if (result.success) {
+      await updateItem(item.item_id, updates);
       setSuccess(true);
-    } else {
-      setError(result.error || 'Failed to update item');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update item');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,13 +63,12 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
     }
 
     setLoading(true);
-    const result = await deleteItem(item.id);
-    setLoading(false);
-
-    if (result.success) {
+    try {
+      await deleteItem(item.item_id);
       router.push('/admin/items');
-    } else {
-      setError(result.error || 'Failed to delete item');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete item');
+      setLoading(false);
     }
   };
 
@@ -90,7 +90,7 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
               {formData.name}
             </div>
             <div style={{ color: '#71717a', fontSize: '0.875rem' }}>
-              {item.id}
+              {item.item_id}
             </div>
           </div>
         </div>
@@ -164,9 +164,9 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
           <input
             type="text"
             className="input"
-            value={formData.flavorText}
+            value={formData.flavor_text}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, flavorText: e.target.value }))
+              setFormData((prev) => ({ ...prev, flavor_text: e.target.value }))
             }
             maxLength={150}
           />

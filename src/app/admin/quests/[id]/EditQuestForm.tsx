@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { updateQuest, deleteQuest } from '@/lib/content/actions';
-import type { Quest, QuestType, QuestDifficulty } from '@/lib/content/schemas';
+import { updateQuest, deleteQuest } from '@/lib/api/services/quests';
+import type { QuestResponse, QuestUpdate, QuestType, QuestDifficulty } from '@/lib/api/types';
 
 const questTypes: QuestType[] = [
   'multiple-choice',
@@ -14,7 +14,7 @@ const questTypes: QuestType[] = [
 const difficulties: QuestDifficulty[] = ['easy', 'medium', 'hard'];
 
 interface EditQuestFormProps {
-  quest: Quest;
+  quest: QuestResponse;
 }
 
 export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
@@ -27,13 +27,13 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
     name: quest.name,
     description: quest.description,
     prompt: quest.prompt,
-    type: quest.type,
+    quest_type: quest.quest_type as QuestType,
     options: quest.options?.join('\n') || '',
-    correctAnswer: quest.correctAnswer || '',
-    xpReward: quest.xpReward,
-    itemReward: quest.itemReward || '',
-    hostPostSlug: quest.hostPostSlug,
-    difficulty: quest.difficulty,
+    correct_answer: quest.correct_answer || '',
+    xp_reward: quest.xp_reward,
+    item_reward: quest.item_reward || '',
+    host_post_slug: quest.host_post_slug,
+    difficulty: quest.difficulty as QuestDifficulty,
   });
 
   useEffect(() => {
@@ -48,28 +48,29 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
     setLoading(true);
     setError(null);
 
-    const updates: Partial<Quest> = {
-      name: formData.name,
-      description: formData.description,
-      prompt: formData.prompt,
-      type: formData.type,
-      options: formData.options
-        ? formData.options.split('\n').filter((o) => o.trim())
-        : undefined,
-      correctAnswer: formData.correctAnswer || undefined,
-      xpReward: formData.xpReward,
-      itemReward: formData.itemReward || undefined,
-      hostPostSlug: formData.hostPostSlug,
-      difficulty: formData.difficulty,
-    };
+    try {
+      const updates: QuestUpdate = {
+        name: formData.name,
+        description: formData.description,
+        prompt: formData.prompt,
+        quest_type: formData.quest_type,
+        options: formData.options
+          ? formData.options.split('\n').filter((o) => o.trim())
+          : undefined,
+        correct_answer: formData.correct_answer || undefined,
+        xp_reward: formData.xp_reward,
+        item_reward: formData.item_reward || null,
+        host_post_slug: formData.host_post_slug,
+        difficulty: formData.difficulty,
+      };
 
-    const result = await updateQuest(quest.id, updates);
-    setLoading(false);
-
-    if (result.success) {
+      await updateQuest(quest.quest_id, updates);
       setSuccess(true);
-    } else {
-      setError(result.error || 'Failed to update quest');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update quest');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -79,13 +80,12 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
     }
 
     setLoading(true);
-    const result = await deleteQuest(quest.id);
-    setLoading(false);
-
-    if (result.success) {
+    try {
+      await deleteQuest(quest.quest_id);
       router.push('/admin/quests');
-    } else {
-      setError(result.error || 'Failed to delete quest');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete quest');
+      setLoading(false);
     }
   };
 
@@ -129,9 +129,9 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
           <input
             type="text"
             className="input"
-            value={formData.hostPostSlug}
+            value={formData.host_post_slug}
             onChange={(e) =>
-              setFormData((prev) => ({ ...prev, hostPostSlug: e.target.value }))
+              setFormData((prev) => ({ ...prev, host_post_slug: e.target.value }))
             }
             required
           />
@@ -142,11 +142,11 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
             <label className="form__label">Type *</label>
             <select
               className="select"
-              value={formData.type}
+              value={formData.quest_type}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  type: e.target.value as QuestType,
+                  quest_type: e.target.value as QuestType,
                 }))
               }
             >
@@ -191,7 +191,7 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
           />
         </div>
 
-        {formData.type === 'multiple-choice' && (
+        {formData.quest_type === 'multiple-choice' && (
           <div className="form__group">
             <label className="form__label">Options</label>
             <textarea
@@ -205,18 +205,18 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
           </div>
         )}
 
-        {(formData.type === 'multiple-choice' ||
-          formData.type === 'text-input') && (
+        {(formData.quest_type === 'multiple-choice' ||
+          formData.quest_type === 'text-input') && (
           <div className="form__group">
             <label className="form__label">Correct Answer</label>
             <input
               type="text"
               className="input"
-              value={formData.correctAnswer}
+              value={formData.correct_answer}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  correctAnswer: e.target.value,
+                  correct_answer: e.target.value,
                 }))
               }
             />
@@ -229,11 +229,11 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
             <input
               type="number"
               className="input"
-              value={formData.xpReward}
+              value={formData.xp_reward}
               onChange={(e) =>
                 setFormData((prev) => ({
                   ...prev,
-                  xpReward: parseInt(e.target.value) || 30,
+                  xp_reward: parseInt(e.target.value) || 30,
                 }))
               }
               min={1}
@@ -246,9 +246,9 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
             <input
               type="text"
               className="input"
-              value={formData.itemReward}
+              value={formData.item_reward}
               onChange={(e) =>
-                setFormData((prev) => ({ ...prev, itemReward: e.target.value }))
+                setFormData((prev) => ({ ...prev, item_reward: e.target.value }))
               }
             />
           </div>

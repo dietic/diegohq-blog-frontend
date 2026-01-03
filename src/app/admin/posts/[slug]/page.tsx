@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getPostBySlug } from '@/lib/content';
+import { getPostBySlug } from '@/lib/api/services/posts';
 import { EditPostForm } from './EditPostForm';
 
 interface EditPostPageProps {

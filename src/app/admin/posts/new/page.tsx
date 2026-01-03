@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createPost } from '@/lib/content/actions';
-import type { PostFrontmatter } from '@/lib/content/schemas';
+import { createPost } from '@/lib/api/services/posts';
+import { MDXPreviewClient } from '@/components/mdx/MDXPreviewClient';
+import type { PostCreate, ContentPillar, TargetLevel } from '@/lib/api/types';
 
 export const NewPostPage = () => {
   const router = useRouter();
@@ -15,8 +16,8 @@ export const NewPostPage = () => {
     title: '',
     slug: '',
     excerpt: '',
-    contentPillar: 'programming' as const,
-    targetLevel: 'beginner' as const,
+    contentPillar: 'programming' as ContentPillar,
+    targetLevel: 'beginner' as TargetLevel,
     tags: '',
     readXp: 10,
     requiredLevel: '',
@@ -51,41 +52,30 @@ export const NewPostPage = () => {
     setLoading(true);
     setError(null);
 
-    const frontmatter: PostFrontmatter = {
-      title: formData.title,
-      slug: formData.slug,
-      excerpt: formData.excerpt,
-      date: new Date().toISOString().split('T')[0],
-      author: 'Diego',
-      contentPillar: formData.contentPillar,
-      targetLevel: formData.targetLevel,
-      tags: formData.tags
-        ? formData.tags.split(',').map((t) => t.trim())
-        : undefined,
-      readXp: formData.readXp,
-      requiredLevel: formData.requiredLevel
-        ? parseInt(formData.requiredLevel)
-        : undefined,
-      requiredItem: formData.requiredItem || undefined,
-      questId: formData.questId || undefined,
-      metaDescription: formData.metaDescription || undefined,
-      published: formData.published,
-      featured: formData.featured,
-    };
+    try {
+      const postData: PostCreate = {
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt,
+        content: formData.content || '# ' + formData.title + '\n\nStart writing your post here...',
+        content_pillar: formData.contentPillar as ContentPillar,
+        target_level: formData.targetLevel as TargetLevel,
+        tags: formData.tags ? formData.tags.split(',').map((t) => t.trim()) : [],
+        read_xp: formData.readXp,
+        required_level: formData.requiredLevel ? parseInt(formData.requiredLevel) : null,
+        required_item: formData.requiredItem || null,
+        quest_id: formData.questId || null,
+        meta_description: formData.metaDescription || null,
+        published: formData.published,
+        featured: formData.featured,
+      };
 
-    const result = await createPost({
-      frontmatter,
-      content:
-        formData.content ||
-        '# ' + formData.title + '\n\nStart writing your post here...',
-    });
-
-    setLoading(false);
-
-    if (result.success) {
+      await createPost(postData);
       router.push('/admin/posts');
-    } else {
-      setError(result.error || 'Failed to create post');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create post');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -101,36 +91,50 @@ export const NewPostPage = () => {
       {error && <div className="alert alert--error">{error}</div>}
 
       <form onSubmit={handleSubmit} className="form form--wide">
-        <div className="grid grid--2">
-          <div>
-            <div className="form__group">
-              <label className="form__label">Title *</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.title}
-                onChange={handleTitleChange}
-                placeholder="My Awesome Post"
-                required
-              />
-            </div>
+        {/* Post Settings Section */}
+        <details className="form__details" open>
+          <summary className="form__summary">Post Settings</summary>
+          <div className="form__details-content">
+            <div className="grid grid--3">
+              <div className="form__group">
+                <label className="form__label">Title *</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.title}
+                  onChange={handleTitleChange}
+                  placeholder="My Awesome Post"
+                  required
+                />
+              </div>
 
-            <div className="form__group">
-              <label className="form__label">Slug *</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, slug: e.target.value }))
-                }
-                placeholder="my-awesome-post"
-                pattern="^[a-z0-9-]+$"
-                required
-              />
-              <p className="form__hint">
-                URL-friendly identifier (lowercase, hyphens only)
-              </p>
+              <div className="form__group">
+                <label className="form__label">Slug *</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.slug}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, slug: e.target.value }))
+                  }
+                  placeholder="my-awesome-post"
+                  pattern="^[a-z0-9-]+$"
+                  required
+                />
+              </div>
+
+              <div className="form__group">
+                <label className="form__label">Tags</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.tags}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, tags: e.target.value }))
+                  }
+                  placeholder="git, tutorial"
+                />
+              </div>
             </div>
 
             <div className="form__group">
@@ -143,6 +147,7 @@ export const NewPostPage = () => {
                 }
                 placeholder="A brief summary of your post..."
                 maxLength={300}
+                rows={2}
                 required
               />
               <p className="form__hint">
@@ -150,7 +155,7 @@ export const NewPostPage = () => {
               </p>
             </div>
 
-            <div className="form__row">
+            <div className="grid grid--4">
               <div className="form__group">
                 <label className="form__label">Content Pillar *</label>
                 <select
@@ -159,8 +164,7 @@ export const NewPostPage = () => {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      contentPillar: e.target
-                        .value as PostFrontmatter['contentPillar'],
+                      contentPillar: e.target.value as ContentPillar,
                     }))
                   }
                 >
@@ -178,8 +182,7 @@ export const NewPostPage = () => {
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      targetLevel: e.target
-                        .value as PostFrontmatter['targetLevel'],
+                      targetLevel: e.target.value as TargetLevel,
                     }))
                   }
                 >
@@ -188,23 +191,7 @@ export const NewPostPage = () => {
                   <option value="advanced">Advanced</option>
                 </select>
               </div>
-            </div>
 
-            <div className="form__group">
-              <label className="form__label">Tags</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.tags}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, tags: e.target.value }))
-                }
-                placeholder="git, version-control, tutorial"
-              />
-              <p className="form__hint">Comma-separated list of tags</p>
-            </div>
-
-            <div className="form__row">
               <div className="form__group">
                 <label className="form__label">Read XP</label>
                 <input
@@ -239,7 +226,7 @@ export const NewPostPage = () => {
               </div>
             </div>
 
-            <div className="form__row">
+            <div className="grid grid--4">
               <div className="form__group">
                 <label className="form__label">Required Item</label>
                 <input
@@ -271,72 +258,81 @@ export const NewPostPage = () => {
                   placeholder="quest-id"
                 />
               </div>
-            </div>
 
-            <div className="form__group">
-              <label className="form__label">Meta Description</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.metaDescription}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metaDescription: e.target.value,
-                  }))
-                }
-                placeholder="SEO description..."
-                maxLength={160}
-              />
-            </div>
-
-            <div
-              className="form__group"
-              style={{ display: 'flex', gap: '1.5rem' }}
-            >
-              <label className="checkbox">
+              <div className="form__group">
+                <label className="form__label">Meta Description</label>
                 <input
-                  type="checkbox"
-                  checked={formData.published}
+                  type="text"
+                  className="input"
+                  value={formData.metaDescription}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      published: e.target.checked,
+                      metaDescription: e.target.value,
                     }))
                   }
+                  placeholder="SEO description..."
+                  maxLength={160}
                 />
-                <span>Published</span>
-              </label>
+              </div>
 
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={formData.featured}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      featured: e.target.checked,
-                    }))
-                  }
-                />
-                <span>Featured</span>
-              </label>
+              <div
+                className="form__group"
+                style={{ display: 'flex', gap: '1rem', alignItems: 'end', paddingBottom: '0.5rem' }}
+              >
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={formData.published}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        published: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span>Published</span>
+                </label>
+
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        featured: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span>Featured</span>
+                </label>
+              </div>
             </div>
           </div>
+        </details>
 
-          <div>
-            <div className="form__group">
-              <label className="form__label">Content (MDX)</label>
-              <textarea
-                className="textarea textarea--code"
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, content: e.target.value }))
-                }
-                placeholder="# My Post&#10;&#10;Write your content here using Markdown..."
-                style={{ height: '100%', minHeight: '500px' }}
-              />
-            </div>
+        {/* Editor and Preview Side by Side */}
+        <div className="grid grid--2" style={{ marginTop: '1.5rem' }}>
+          <div className="form__group">
+            <label className="form__label">Content (MDX)</label>
+            <textarea
+              className="textarea textarea--code"
+              value={formData.content}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, content: e.target.value }))
+              }
+              placeholder="# My Post&#10;&#10;Write your content here using MDX..."
+              style={{ height: '500px', resize: 'vertical' }}
+            />
+          </div>
+
+          <div className="form__group">
+            <label className="form__label">Preview</label>
+            <MDXPreviewClient
+              content={formData.content}
+              title={formData.title}
+            />
           </div>
         </div>
 

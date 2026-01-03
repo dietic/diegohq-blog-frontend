@@ -1,17 +1,46 @@
 import Link from 'next/link';
 import {
-  getAllPosts,
-  getAllQuests,
-  getAllItems,
-  getDesktopIcons,
-} from '@/lib/content';
+  FileText,
+  Swords,
+  Package,
+  Plus,
+} from 'lucide-react';
+import { getAllPosts } from '@/lib/api/services/posts';
+import { getAllQuests } from '@/lib/api/services/quests';
+import { getAllItems } from '@/lib/api/services/items';
+
+async function safeGetPosts() {
+  try {
+    return await getAllPosts();
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    return [];
+  }
+}
+
+async function safeGetQuests() {
+  try {
+    return await getAllQuests();
+  } catch (error) {
+    console.error('Failed to fetch quests:', error);
+    return [];
+  }
+}
+
+async function safeGetItems() {
+  try {
+    return await getAllItems();
+  } catch (error) {
+    console.error('Failed to fetch items:', error);
+    return [];
+  }
+}
 
 export const AdminDashboard = async () => {
-  const [posts, quests, items, icons] = await Promise.all([
-    getAllPosts(),
-    getAllQuests(),
-    getAllItems(),
-    getDesktopIcons(),
+  const [posts, quests, items] = await Promise.all([
+    safeGetPosts(),
+    safeGetQuests(),
+    safeGetItems(),
   ]);
 
   const publishedPosts = posts.filter((p) => p.published);
@@ -23,24 +52,21 @@ export const AdminDashboard = async () => {
       value: posts.length,
       meta: `${publishedPosts.length} published, ${draftPosts.length} drafts`,
       href: '/admin/posts',
+      icon: <FileText size={20} />,
     },
     {
       label: 'Quests',
       value: quests.length,
       meta: 'Active challenges',
       href: '/admin/quests',
+      icon: <Swords size={20} />,
     },
     {
       label: 'Items',
       value: items.length,
       meta: 'Collectibles',
       href: '/admin/items',
-    },
-    {
-      label: 'Desktop Icons',
-      value: icons.length,
-      meta: 'Visible on desktop',
-      href: '/admin/desktop',
+      icon: <Package size={20} />,
     },
   ];
 
@@ -65,6 +91,7 @@ export const AdminDashboard = async () => {
             style={{ textDecoration: 'none' }}
           >
             <div className="stat-card">
+              <div className="stat-card__icon">{stat.icon}</div>
               <div className="stat-card__label">{stat.label}</div>
               <div className="stat-card__value">{stat.value}</div>
               <div className="stat-card__meta">{stat.meta}</div>
@@ -110,7 +137,7 @@ export const AdminDashboard = async () => {
                         </span>
                       </td>
                       <td style={{ color: '#71717a' }}>
-                        {new Date(post.date).toLocaleDateString()}
+                        {new Date(post.created_at).toLocaleDateString()}
                       </td>
                     </tr>
                   ))}
@@ -143,16 +170,16 @@ export const AdminDashboard = async () => {
               }}
             >
               <Link href="/admin/posts/new" className="btn btn--secondary">
-                📝 Create New Post
+                <Plus size={16} />
+                Create New Post
               </Link>
               <Link href="/admin/quests/new" className="btn btn--secondary">
-                ⚔️ Create New Quest
+                <Plus size={16} />
+                Create New Quest
               </Link>
               <Link href="/admin/items/new" className="btn btn--secondary">
-                🎒 Create New Item
-              </Link>
-              <Link href="/admin/desktop" className="btn btn--secondary">
-                🖥️ Manage Desktop
+                <Plus size={16} />
+                Create New Item
               </Link>
             </div>
           </div>

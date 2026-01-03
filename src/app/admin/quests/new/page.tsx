@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createQuest } from '@/lib/content/actions';
-import type { Quest, QuestType, QuestDifficulty } from '@/lib/content/schemas';
+import { createQuest } from '@/lib/api/services/quests';
+import type { QuestCreate, QuestType, QuestDifficulty } from '@/lib/api/types';
 
 const questTypes: QuestType[] = [
   'multiple-choice',
@@ -54,29 +54,27 @@ export const NewQuestPage = () => {
     setLoading(true);
     setError(null);
 
-    const quest: Quest = {
-      id: formData.id,
-      name: formData.name,
-      description: formData.description,
-      prompt: formData.prompt,
-      type: formData.type,
-      options: formData.options
-        ? formData.options.split('\n').filter((o) => o.trim())
-        : undefined,
-      correctAnswer: formData.correctAnswer || undefined,
-      xpReward: formData.xpReward,
-      itemReward: formData.itemReward || undefined,
-      hostPostSlug: formData.hostPostSlug,
-      difficulty: formData.difficulty,
-    };
+    try {
+      const questData: QuestCreate = {
+        quest_id: formData.id,
+        name: formData.name,
+        description: formData.description,
+        prompt: formData.prompt,
+        quest_type: formData.type,
+        options: formData.options ? formData.options.split('\n').filter((o) => o.trim()) : [],
+        correct_answer: formData.correctAnswer || null,
+        xp_reward: formData.xpReward,
+        item_reward: formData.itemReward || null,
+        host_post_slug: formData.hostPostSlug,
+        difficulty: formData.difficulty,
+      };
 
-    const result = await createQuest(quest);
-    setLoading(false);
-
-    if (result.success) {
+      await createQuest(questData);
       router.push('/admin/quests');
-    } else {
-      setError(result.error || 'Failed to create quest');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create quest');
+    } finally {
+      setLoading(false);
     }
   };
 

@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { updatePost, deletePost } from '@/lib/content/actions';
-import type { Post, PostFrontmatter } from '@/lib/content/schemas';
+import { updatePost, deletePost } from '@/lib/api/services/posts';
+import { MDXPreviewClient } from '@/components/mdx/MDXPreviewClient';
+import type { PostResponse, PostUpdate, ContentPillar, TargetLevel } from '@/lib/api/types';
 
 interface EditPostFormProps {
-  post: Post;
+  post: PostResponse;
 }
 
 export const EditPostForm = ({ post }: EditPostFormProps) => {
@@ -20,14 +21,14 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
     title: post.title,
     slug: post.slug,
     excerpt: post.excerpt,
-    contentPillar: post.contentPillar,
-    targetLevel: post.targetLevel,
+    content_pillar: post.content_pillar as ContentPillar,
+    target_level: post.target_level as TargetLevel,
     tags: post.tags?.join(', ') || '',
-    readXp: post.readXp,
-    requiredLevel: post.requiredLevel?.toString() || '',
-    requiredItem: post.requiredItem || '',
-    questId: post.questId || '',
-    metaDescription: post.metaDescription || '',
+    read_xp: post.read_xp,
+    required_level: post.required_level?.toString() || '',
+    required_item: post.required_item || '',
+    quest_id: post.quest_id || '',
+    meta_description: post.meta_description || '',
     published: post.published,
     featured: post.featured,
     content: post.content,
@@ -45,41 +46,39 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
     setLoading(true);
     setError(null);
 
-    const frontmatter: Partial<PostFrontmatter> = {
-      title: formData.title,
-      slug: formData.slug,
-      excerpt: formData.excerpt,
-      contentPillar: formData.contentPillar,
-      targetLevel: formData.targetLevel,
-      tags: formData.tags
-        ? formData.tags.split(',').map((t) => t.trim())
-        : undefined,
-      readXp: formData.readXp,
-      requiredLevel: formData.requiredLevel
-        ? parseInt(formData.requiredLevel)
-        : undefined,
-      requiredItem: formData.requiredItem || undefined,
-      questId: formData.questId || undefined,
-      metaDescription: formData.metaDescription || undefined,
-      published: formData.published,
-      featured: formData.featured,
-    };
+    try {
+      const updateData: PostUpdate = {
+        title: formData.title,
+        slug: formData.slug,
+        excerpt: formData.excerpt,
+        content: formData.content,
+        content_pillar: formData.content_pillar,
+        target_level: formData.target_level,
+        tags: formData.tags
+          ? formData.tags.split(',').map((t) => t.trim())
+          : undefined,
+        read_xp: formData.read_xp,
+        required_level: formData.required_level
+          ? parseInt(formData.required_level)
+          : null,
+        required_item: formData.required_item || null,
+        quest_id: formData.quest_id || null,
+        meta_description: formData.meta_description || null,
+        published: formData.published,
+        featured: formData.featured,
+      };
 
-    const result = await updatePost({
-      slug: post.slug,
-      frontmatter,
-      content: formData.content,
-    });
-
-    setLoading(false);
-
-    if (result.success) {
+      await updatePost(post.slug, updateData);
       setSuccess(true);
+
       if (formData.slug !== post.slug) {
         router.push(`/admin/posts/${formData.slug}`);
       }
-    } else {
-      setError(result.error || 'Failed to update post');
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update post');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -93,13 +92,12 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
     }
 
     setLoading(true);
-    const result = await deletePost(post.slug);
-    setLoading(false);
-
-    if (result.success) {
+    try {
+      await deletePost(post.slug);
       router.push('/admin/posts');
-    } else {
-      setError(result.error || 'Failed to delete post');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete post');
+      setLoading(false);
     }
   };
 
@@ -111,36 +109,50 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
       )}
 
       <form onSubmit={handleSubmit} className="form form--wide">
-        <div className="grid grid--2">
-          <div>
-            <div className="form__group">
-              <label className="form__label">Title *</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.title}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, title: e.target.value }))
-                }
-                required
-              />
-            </div>
+        {/* Post Settings Section */}
+        <details className="form__details" open>
+          <summary className="form__summary">Post Settings</summary>
+          <div className="form__details-content">
+            <div className="grid grid--3">
+              <div className="form__group">
+                <label className="form__label">Title *</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.title}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, title: e.target.value }))
+                  }
+                  required
+                />
+              </div>
 
-            <div className="form__group">
-              <label className="form__label">Slug *</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.slug}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, slug: e.target.value }))
-                }
-                pattern="^[a-z0-9-]+$"
-                required
-              />
-              <p className="form__hint">
-                Changing the slug will update the file name
-              </p>
+              <div className="form__group">
+                <label className="form__label">Slug *</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.slug}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, slug: e.target.value }))
+                  }
+                  pattern="^[a-z0-9-]+$"
+                  required
+                />
+              </div>
+
+              <div className="form__group">
+                <label className="form__label">Tags</label>
+                <input
+                  type="text"
+                  className="input"
+                  value={formData.tags}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, tags: e.target.value }))
+                  }
+                  placeholder="git, tutorial"
+                />
+              </div>
             </div>
 
             <div className="form__group">
@@ -152,6 +164,7 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                   setFormData((prev) => ({ ...prev, excerpt: e.target.value }))
                 }
                 maxLength={300}
+                rows={2}
                 required
               />
               <p className="form__hint">
@@ -159,17 +172,16 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
               </p>
             </div>
 
-            <div className="form__row">
+            <div className="grid grid--4">
               <div className="form__group">
                 <label className="form__label">Content Pillar *</label>
                 <select
                   className="select"
-                  value={formData.contentPillar}
+                  value={formData.content_pillar}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      contentPillar: e.target
-                        .value as PostFrontmatter['contentPillar'],
+                      content_pillar: e.target.value as ContentPillar,
                     }))
                   }
                 >
@@ -183,12 +195,11 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                 <label className="form__label">Target Level *</label>
                 <select
                   className="select"
-                  value={formData.targetLevel}
+                  value={formData.target_level}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      targetLevel: e.target
-                        .value as PostFrontmatter['targetLevel'],
+                      target_level: e.target.value as TargetLevel,
                     }))
                   }
                 >
@@ -197,32 +208,17 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                   <option value="advanced">Advanced</option>
                 </select>
               </div>
-            </div>
 
-            <div className="form__group">
-              <label className="form__label">Tags</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.tags}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, tags: e.target.value }))
-                }
-                placeholder="git, version-control, tutorial"
-              />
-            </div>
-
-            <div className="form__row">
               <div className="form__group">
                 <label className="form__label">Read XP</label>
                 <input
                   type="number"
                   className="input"
-                  value={formData.readXp}
+                  value={formData.read_xp}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      readXp: parseInt(e.target.value) || 10,
+                      read_xp: parseInt(e.target.value) || 10,
                     }))
                   }
                   min={0}
@@ -234,11 +230,11 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                 <input
                   type="number"
                   className="input"
-                  value={formData.requiredLevel}
+                  value={formData.required_level}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      requiredLevel: e.target.value,
+                      required_level: e.target.value,
                     }))
                   }
                   min={1}
@@ -246,19 +242,20 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
               </div>
             </div>
 
-            <div className="form__row">
+            <div className="grid grid--4">
               <div className="form__group">
                 <label className="form__label">Required Item</label>
                 <input
                   type="text"
                   className="input"
-                  value={formData.requiredItem}
+                  value={formData.required_item}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      requiredItem: e.target.value,
+                      required_item: e.target.value,
                     }))
                   }
+                  placeholder="item-id"
                 />
               </div>
 
@@ -267,79 +264,90 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
                 <input
                   type="text"
                   className="input"
-                  value={formData.questId}
+                  value={formData.quest_id}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      questId: e.target.value,
+                      quest_id: e.target.value,
                     }))
                   }
+                  placeholder="quest-id"
                 />
               </div>
-            </div>
 
-            <div className="form__group">
-              <label className="form__label">Meta Description</label>
-              <input
-                type="text"
-                className="input"
-                value={formData.metaDescription}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    metaDescription: e.target.value,
-                  }))
-                }
-                maxLength={160}
-              />
-            </div>
-
-            <div
-              className="form__group"
-              style={{ display: 'flex', gap: '1.5rem' }}
-            >
-              <label className="checkbox">
+              <div className="form__group">
+                <label className="form__label">Meta Description</label>
                 <input
-                  type="checkbox"
-                  checked={formData.published}
+                  type="text"
+                  className="input"
+                  value={formData.meta_description}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
-                      published: e.target.checked,
+                      meta_description: e.target.value,
                     }))
                   }
+                  placeholder="SEO description..."
+                  maxLength={160}
                 />
-                <span>Published</span>
-              </label>
+              </div>
 
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={formData.featured}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      featured: e.target.checked,
-                    }))
-                  }
-                />
-                <span>Featured</span>
-              </label>
+              <div
+                className="form__group"
+                style={{ display: 'flex', gap: '1rem', alignItems: 'end', paddingBottom: '0.5rem' }}
+              >
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={formData.published}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        published: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span>Published</span>
+                </label>
+
+                <label className="checkbox">
+                  <input
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        featured: e.target.checked,
+                      }))
+                    }
+                  />
+                  <span>Featured</span>
+                </label>
+              </div>
             </div>
           </div>
+        </details>
 
-          <div>
-            <div className="form__group">
-              <label className="form__label">Content (MDX)</label>
-              <textarea
-                className="textarea textarea--code"
-                value={formData.content}
-                onChange={(e) =>
-                  setFormData((prev) => ({ ...prev, content: e.target.value }))
-                }
-                style={{ height: '100%', minHeight: '500px' }}
-              />
-            </div>
+        {/* Editor and Preview Side by Side */}
+        <div className="grid grid--2" style={{ marginTop: '1.5rem' }}>
+          <div className="form__group">
+            <label className="form__label">Content (MDX)</label>
+            <textarea
+              className="textarea textarea--code"
+              value={formData.content}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, content: e.target.value }))
+              }
+              style={{ height: '500px', resize: 'vertical' }}
+            />
+          </div>
+
+          <div className="form__group">
+            <label className="form__label">Preview</label>
+            <MDXPreviewClient
+              content={formData.content}
+              title={formData.title}
+            />
           </div>
         </div>
 
