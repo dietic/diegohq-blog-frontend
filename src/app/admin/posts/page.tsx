@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FileText } from 'lucide-react';
 import { getAllPosts } from '@/lib/api/services/posts';
 import type { PostResponse } from '@/lib/api/types';
+import { ResetProgressButton } from './ResetProgressButton';
 
 export const PostsPage = async () => {
   let posts: PostResponse[] = [];
@@ -19,6 +20,7 @@ export const PostsPage = async () => {
           <p className="page-header__subtitle">Manage your journal entries</p>
         </div>
         <div className="page-header__actions">
+          <ResetProgressButton />
           <Link href="/admin/posts/new" className="btn btn--primary">
             + New Post
           </Link>
