@@ -1,0 +1,338 @@
+// MDX Component Styles
+// Matches the retro game aesthetic
+
+// ============================================
+// Variables (matching the game theme)
+// ============================================
+$color-bg: #18181b;
+$color-bg-light: #27272a;
+$color-border: #3f3f46;
+$color-text: #e4e4e7;
+$color-text-muted: #a1a1aa;
+$color-text-bright: #fafafa;
+
+$color-teal: #14b8a6;
+$color-teal-light: #5eead4;
+$color-purple: #8b5cf6;
+$color-yellow: #fbbf24;
+$color-red: #f87171;
+$color-green: #34d399;
+$color-blue: #60a5fa;
+
+// ============================================
+// Base Typography
+// ============================================
+.mdx-h1,
+.mdx-h2,
+.mdx-h3 {
+  font-family: 'Press Start 2P', monospace;
+  color: $color-text-bright;
+  margin: 1.5rem 0 1rem;
+  line-height: 1.4;
+}
+
+.mdx-h1 { font-size: 1rem; }
+.mdx-h2 { font-size: 0.875rem; }
+.mdx-h3 { font-size: 0.75rem; }
+
+.mdx-p {
+  margin: 0 0 0.75rem;
+  line-height: 1.6;
+}
+
+.mdx-a {
+  color: $color-teal;
+  text-decoration: underline;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $color-teal-light;
+  }
+}
+
+.mdx-strong {
+  color: $color-text-bright;
+  font-weight: 700;
+}
+
+.mdx-em {
+  color: $color-text-muted;
+  font-style: italic;
+}
+
+// ============================================
+// Lists
+// ============================================
+.mdx-ul,
+.mdx-ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.mdx-li {
+  margin-bottom: 0.375rem;
+  line-height: 1.5;
+
+  &::marker {
+    color: $color-teal;
+  }
+}
+
+// ============================================
+// Code
+// ============================================
+.mdx-code {
+  background: $color-bg-light;
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.9em;
+  color: $color-teal-light;
+}
+
+.mdx-pre {
+  background: $color-bg;
+  border: 1px solid $color-border;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+
+  .mdx-code {
+    background: none;
+    padding: 0;
+    color: $color-text;
+  }
+}
+
+// ============================================
+// Blockquote
+// ============================================
+.mdx-blockquote {
+  border-left: 3px solid $color-teal;
+  margin: 1rem 0;
+  padding: 0.5rem 1rem;
+  background: rgba($color-teal, 0.1);
+  color: $color-text-muted;
+
+  p {
+    margin: 0;
+  }
+}
+
+// ============================================
+// Horizontal Rule
+// ============================================
+.mdx-hr {
+  border: none;
+  border-top: 1px solid $color-border;
+  margin: 1.5rem 0;
+}
+
+// ============================================
+// Images
+// ============================================
+.mdx-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+}
+
+// ============================================
+// Callout Component
+// ============================================
+.mdx-callout {
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-left: 3px solid;
+
+  &--info {
+    background: rgba($color-blue, 0.1);
+    border-color: $color-blue;
+
+    .mdx-callout__title { color: $color-blue; }
+  }
+
+  &--warning {
+    background: rgba($color-yellow, 0.1);
+    border-color: $color-yellow;
+
+    .mdx-callout__title { color: $color-yellow; }
+  }
+
+  &--success {
+    background: rgba($color-green, 0.1);
+    border-color: $color-green;
+
+    .mdx-callout__title { color: $color-green; }
+  }
+
+  &--error {
+    background: rgba($color-red, 0.1);
+    border-color: $color-red;
+
+    .mdx-callout__title { color: $color-red; }
+  }
+
+  &__title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.625rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+  }
+
+  &__content {
+    p:last-child { margin-bottom: 0; }
+  }
+}
+
+// ============================================
+// Card Component
+// ============================================
+.mdx-card {
+  background: $color-bg-light;
+  border: 1px solid $color-border;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  margin: 1rem 0;
+
+  &__title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.625rem;
+    color: $color-teal;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  &__content {
+    p:last-child { margin-bottom: 0; }
+  }
+}
+
+// ============================================
+// Button Component
+// ============================================
+.mdx-button {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-family: 'VT323', monospace;
+  font-size: 1rem;
+  text-decoration: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+
+  &--primary {
+    background: $color-teal;
+    color: #000;
+
+    &:hover {
+      background: $color-teal-light;
+    }
+  }
+
+  &--secondary {
+    background: $color-bg-light;
+    border-color: $color-border;
+    color: $color-text;
+
+    &:hover {
+      border-color: $color-teal;
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $color-teal;
+
+    &:hover {
+      background: rgba($color-teal, 0.1);
+    }
+  }
+}
+
+// ============================================
+// Grid Component
+// ============================================
+.mdx-grid {
+  display: grid;
+  gap: 1rem;
+  margin: 1rem 0;
+
+  &--2 { grid-template-columns: repeat(2, 1fr); }
+  &--3 { grid-template-columns: repeat(3, 1fr); }
+  &--4 { grid-template-columns: repeat(4, 1fr); }
+
+  @media (max-width: 640px) {
+    &--2,
+    &--3,
+    &--4 {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+// ============================================
+// Badge Component
+// ============================================
+.mdx-badge {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: 'VT323', monospace;
+  border-radius: 0.25rem;
+  text-transform: uppercase;
+
+  &--teal {
+    background: rgba($color-teal, 0.2);
+    color: $color-teal;
+  }
+
+  &--purple {
+    background: rgba($color-purple, 0.2);
+    color: $color-purple;
+  }
+
+  &--yellow {
+    background: rgba($color-yellow, 0.2);
+    color: $color-yellow;
+  }
+
+  &--red {
+    background: rgba($color-red, 0.2);
+    color: $color-red;
+  }
+
+  &--gray {
+    background: rgba($color-text-muted, 0.2);
+    color: $color-text-muted;
+  }
+}
+
+// ============================================
+// Divider Component
+// ============================================
+.mdx-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: $color-border;
+  }
+
+  &__label {
+    padding: 0 1rem;
+    font-family: 'VT323', monospace;
+    font-size: 0.875rem;
+    color: $color-text-muted;
+    text-transform: uppercase;
+  }
+}

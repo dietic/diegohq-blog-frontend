@@ -26,8 +26,8 @@
       padding: 0.25rem 0.75rem;
       background: var(--window-primary-action-bg);
       border: 2px solid var(--window-primary-border);
+      color: white;
       border-radius: 4px;
-      color: inherit;
       font-family: inherit;
       font-size: 1.25rem;
       cursor: pointer;
@@ -70,7 +70,7 @@
     background: rgba(0, 0, 0, 0.2);
     border: 2px solid transparent;
     border-radius: 4px;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--window-primary-header-foreground);
     cursor: pointer;
     font-family: 'VT323';
     font-size: 1.1rem;
@@ -83,8 +83,8 @@
 
     &--active {
       background: var(--window-primary-bg);
-      color: black;
       border: 2px solid var(--window-primary-border);
+      color: var(--window-primary-header-foreground);
       box-shadow:
         inset 1px 1px 0px rgba(255, 255, 255, 0.5),
         2px 2px 0px rgba(0, 0, 0, 0.2);
@@ -95,10 +95,51 @@
     flex: 1;
     white-space: nowrap;
     overflow: hidden;
+    color: var(--window-primary-header-foreground) !important;
     text-overflow: ellipsis;
   }
 
-  // === 3. TRAY ===
+  // === 3. LOGOUT BUTTON ===
+  &__logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: var(--window-primary-action-bg);
+    border: 2px solid var(--window-primary-border);
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
+    transition: all 0.15s;
+
+    img {
+      image-rendering: pixelated;
+    }
+
+    &:hover:not(:disabled) {
+      background: #e94560;
+      border-color: #e94560;
+    }
+
+    &:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    &--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+
+      &:hover {
+        background: var(--window-primary-action-bg);
+        border-color: var(--window-primary-border);
+      }
+    }
+  }
+
+  // === 4. TRAY ===
   &__tray {
     display: flex;
     align-items: center;
