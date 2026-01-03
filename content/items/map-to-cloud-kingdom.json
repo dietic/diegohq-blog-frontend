@@ -1,8 +1,0 @@
-{
-  "id": "map-to-cloud-kingdom",
-  "name": "Map to the Cloud Kingdom",
-  "description": "An ancient map revealing the path to GitHub.",
-  "icon": "/items/map-cloud.png",
-  "rarity": "uncommon",
-  "flavorText": "With this map, the fog lifts and the way becomes clear."
-}
