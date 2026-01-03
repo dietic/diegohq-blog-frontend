@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { pressStart2P } from './fonts';
-import { WindowContextProvider } from '@/components/Window/WindowContext';
-import { AuthProvider } from '@/contexts/AuthContext';
+import { Providers } from '@/components/Providers';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -17,9 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pressStart2P.className} antialiased`}>
-        <AuthProvider>
-          <WindowContextProvider>{children}</WindowContextProvider>
-        </AuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

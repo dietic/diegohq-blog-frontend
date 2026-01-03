@@ -6,6 +6,7 @@ import type { PostResponse, ReadPostResponse } from '@/lib/api/types';
 import { useMDXCompiler } from '@/components/mdx/useMDXCompiler';
 import { MDXErrorBoundary } from '@/components/mdx/MDXErrorBoundary';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/Toast';
 import './WindowContent.scss';
 
 interface PostWindowProps {
@@ -18,11 +19,11 @@ interface PostWindowProps {
 export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceClose }: PostWindowProps) {
   const { Content, error, isCompiling } = useMDXCompiler(post.content);
   const { isAuthenticated, updateUserStats } = useAuth();
+  const { showXPToast, showLevelUpToast } = useToast();
   const [showGuestWarning, setShowGuestWarning] = useState(!isAuthenticated);
   const [isXpClaimed, setIsXpClaimed] = useState(false);
   const [isClaimLoading, setIsClaimLoading] = useState(false);
   const [showCloseWarning, setShowCloseWarning] = useState(false);
-  const [showXpToast, setShowXpToast] = useState(false);
   const [xpAwarded, setXpAwarded] = useState(post.read_xp);
   const hasCheckedStatus = useRef(false);
 
@@ -66,7 +67,7 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
       const response = await fetch('/api/game/read-post', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ post_slug: post.slug }),
+        body: JSON.stringify({ post_slug: post.slug, read_xp: post.read_xp }),
       });
 
       if (!response.ok) {
@@ -76,15 +77,19 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
       const data: ReadPostResponse = await response.json();
 
       setIsXpClaimed(true);
-      setXpAwarded(data.xp_awarded);
+      setXpAwarded(data.xpAwarded);
 
       // Update user stats in context
-      updateUserStats(data.new_xp, data.new_level);
+      updateUserStats(data.newXp, data.newLevel);
 
       // Show toast only if XP was actually awarded (not already claimed)
-      if (data.xp_awarded > 0) {
-        setShowXpToast(true);
-        setTimeout(() => setShowXpToast(false), 3000);
+      if (data.xpAwarded > 0) {
+        showXPToast(data.xpAwarded);
+      }
+
+      // Show level up toast if user leveled up
+      if (data.leveledUp) {
+        showLevelUpToast(data.newLevel);
       }
     } catch (err) {
       console.error('Failed to claim XP:', err);
@@ -121,24 +126,6 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
 
   return (
     <div className="window-content post">
-      {/* XP Toast */}
-      {showXpToast && (
-        <div className="xp-toast">
-          <div className="xp-toast__icon">
-            <Image
-              src="/desktop-icons/chest.png"
-              alt="XP"
-              width={32}
-              height={32}
-            />
-          </div>
-          <div className="xp-toast__content">
-            <span className="xp-toast__title">XP Claimed!</span>
-            <span className="xp-toast__amount">+{xpAwarded} XP</span>
-          </div>
-        </div>
-      )}
-
       {/* Close Warning Dialog */}
       {showCloseWarning && (
         <div className="post-dialog__overlay">
@@ -262,13 +249,7 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
           <div className="post__read-action">
             {isXpClaimed ? (
               <div className="post__read-success">
-                <Image
-                  src="/desktop-icons/chest.png"
-                  alt="XP"
-                  width={20}
-                  height={20}
-                />
-                {xpAwarded > 0 ? `+${xpAwarded} XP claimed!` : 'Already claimed!'}
+                ✓ {xpAwarded > 0 ? `+${xpAwarded} XP claimed!` : 'Already claimed!'}
               </div>
             ) : (
               <button

@@ -327,9 +327,9 @@ export interface ReadPostRequest {
 
 export interface ReadPostResponse {
   success: boolean;
-  xp_awarded: number;
-  already_read: boolean;
-  new_xp: number;
-  new_level: number;
-  leveled_up: boolean;
+  xpAwarded: number;
+  alreadyRead: boolean;
+  newXp: number;
+  newLevel: number;
+  leveledUp: boolean;
 }

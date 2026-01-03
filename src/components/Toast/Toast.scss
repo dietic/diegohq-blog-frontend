@@ -1,0 +1,129 @@
+// Toast Container
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  z-index: 10000;
+  pointer-events: none;
+}
+
+// Base Toast
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+  border: 2px solid;
+  border-radius: 8px;
+  padding: 1rem 1.25rem;
+  animation: toastSlideIn 0.3s ease-out;
+  pointer-events: auto;
+  cursor: pointer;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      image-rendering: pixelated;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__title {
+    font-family: 'VT323', monospace;
+    font-size: 1rem;
+    color: #a1a1aa;
+  }
+
+  &__value {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.875rem;
+  }
+
+  // XP Toast variant
+  &--xp {
+    border-color: #22c55e;
+    box-shadow:
+      0 0 20px rgba(34, 197, 94, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+    animation: toastSlideIn 0.3s ease-out, toastPulseGreen 0.5s ease-in-out 0.3s;
+
+    &:hover {
+      border-color: #16a34a;
+    }
+
+    .toast__value--xp {
+      color: #22c55e;
+      text-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    }
+  }
+
+  // Level Up Toast variant
+  &--level-up {
+    border-color: #f59e0b;
+    box-shadow:
+      0 0 20px rgba(245, 158, 11, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+    animation: toastSlideIn 0.3s ease-out, toastPulseGold 0.8s ease-in-out 0.3s 2;
+
+    &:hover {
+      border-color: #d97706;
+    }
+
+    .toast__title {
+      color: #fbbf24;
+    }
+
+    .toast__value--level {
+      color: #f59e0b;
+      text-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+    }
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastPulseGreen {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(34, 197, 94, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 30px rgba(34, 197, 94, 0.5),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@keyframes toastPulseGold {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(245, 158, 11, 0.3),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(245, 158, 11, 0.6),
+      0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+}

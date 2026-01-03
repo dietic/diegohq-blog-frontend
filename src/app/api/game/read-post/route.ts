@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { post_slug } = body;
+    const { post_slug, read_xp } = body;
 
     if (!post_slug) {
       return NextResponse.json(
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
     const response = await apiClient.post<ReadPostResponse>(
       '/game/read-post',
-      { post_slug },
+      { post_slug, read_xp },
       { token }
     );
 
