@@ -1,6 +1,7 @@
 export { JournalWindow } from './JournalWindow';
 export { InventoryWindow } from './InventoryWindow';
 export { PostWindow } from './PostWindow';
+export { QuestWindow } from './QuestWindow';
 export { QuestLogWindow } from './QuestLogWindow';
 export { ProfileWindow } from './ProfileWindow';
 export { LoginWindow } from './LoginWindow';

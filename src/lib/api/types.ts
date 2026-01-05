@@ -33,8 +33,9 @@ export interface UserResponse {
 // Content types
 export type ContentPillar = 'programming' | 'growth-career' | 'saas-journey';
 export type TargetLevel = 'beginner' | 'intermediate' | 'advanced';
-export type QuestType = 'multiple-choice' | 'text-input' | 'call-to-action';
+export type QuestType = 'multiple-choice' | 'code';
 export type QuestDifficulty = 'easy' | 'medium' | 'hard';
+export type CodeLanguage = 'javascript' | 'typescript' | 'python' | 'html' | 'css' | 'jsx' | 'tsx';
 export type ItemRarity = 'common' | 'uncommon' | 'rare' | 'legendary';
 export type WindowType = 'custom' | 'external';
 
@@ -134,9 +135,13 @@ export interface QuestCreate {
   quest_type: QuestType;
   options?: string[] | null;
   correct_answer?: string | null;
+  // Code quest fields
+  language?: CodeLanguage | null;
+  starter_code?: string | null;
+  ai_criteria?: string | null;
+  hint?: string | null;
   xp_reward: number;
   item_reward?: string | null;
-  host_post_slug: string;
   difficulty?: QuestDifficulty;
 }
 
@@ -148,9 +153,13 @@ export interface QuestUpdate {
   quest_type?: QuestType;
   options?: string[];
   correct_answer?: string;
+  // Code quest fields
+  language?: CodeLanguage | null;
+  starter_code?: string | null;
+  ai_criteria?: string | null;
+  hint?: string | null;
   xp_reward?: number;
   item_reward?: string | null;
-  host_post_slug?: string;
   difficulty?: QuestDifficulty;
 }
 
@@ -163,9 +172,13 @@ export interface QuestResponse {
   quest_type: string;
   options: string[] | null;
   correct_answer: string | null;
+  // Code quest fields
+  language: string | null;
+  starter_code: string | null;
+  ai_criteria: string | null;
+  hint: string | null;
   xp_reward: number;
   item_reward: string | null;
-  host_post_slug: string;
   difficulty: string;
   created_at: string;
   updated_at: string;
@@ -332,4 +345,60 @@ export interface ReadPostResponse {
   newXp: number;
   newLevel: number;
   leveledUp: boolean;
+}
+
+// Quest progress types
+export interface QuestProgressResponse {
+  questId: string;
+  questName: string;
+  questType: string;
+  xpReward: number;
+  xpEarned: number;
+  hostPostSlug: string;
+  hostPostTitle: string | null;
+  inProgress: boolean;
+  completed: boolean;
+  startedAt: string | null;
+  completedAt: string | null;
+  attempts: number;
+}
+
+// Quest submission types
+export interface QuestSubmitRequest {
+  answer: string;
+}
+
+export interface QuestSubmitResponse {
+  success: boolean;
+  correct: boolean;
+  xpAwarded: number;
+  attempts: number;
+  newXp: number;
+  newLevel: number;
+  leveledUp: boolean;
+  feedback: string | null;
+}
+
+export interface CodeSubmitRequest {
+  code: string;
+}
+
+export interface CodeSubmitResponse {
+  passed: boolean;
+  feedback: string;
+  attempts: number;
+  showHint: boolean;
+  hint: string | null;
+  cooldownSeconds: number;
+  xpAwarded: number;
+  newXp: number;
+  newLevel: number;
+  leveledUp: boolean;
+}
+
+export interface StartQuestResponse {
+  success: boolean;
+  questId: string;
+  alreadyStarted: boolean;
+  alreadyCompleted: boolean;
 }

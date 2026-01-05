@@ -15,6 +15,7 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
+    "@monaco-editor/react": "^4.7.0",
     "@nsmr/pixelart-react": "^2.0.0",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
