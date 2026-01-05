@@ -23,6 +23,7 @@ import {
   AboutWindow,
   ContactWindow,
 } from '@/components/WindowContent';
+import { features } from '@/config/features';
 
 // ============================================
 // Types
@@ -56,6 +57,7 @@ interface DesktopDataProps {
   items: unknown[];
   onOpenPost: (slug: string) => void;
   onOpenWindow?: (id: string) => void;
+  onOpenQuest?: (questId: string) => void;
 }
 
 // ============================================
@@ -102,7 +104,7 @@ const GUEST_ICONS: DesktopIconConfig[] = [
   {
     id: 'login',
     label: 'Login',
-    icon: '/desktop-icons/person.png',
+    icon: '/desktop-icons/profile-pic.png',
     position: { x: 0, y: 1 },
     windowTitle: 'Login',
     window: ({ onOpenWindow }) => (
@@ -117,7 +119,7 @@ const GUEST_ICONS: DesktopIconConfig[] = [
   {
     id: 'signup',
     label: 'Sign Up',
-    icon: '/desktop-icons/ink.png',
+    icon: '/desktop-icons/signup-pic.png',
     position: { x: 0, y: 2 },
     windowTitle: 'Create Account',
     window: ({ onOpenWindow }) => (
@@ -156,7 +158,7 @@ const AUTH_ICONS: DesktopIconConfig[] = [
     icon: '/desktop-icons/sword.png',
     position: { x: 0, y: 2 },
     windowTitle: 'Quest Log',
-    window: ({ quests }) => <QuestLogWindow quests={quests as any} />,
+    window: ({ onOpenPost, onOpenQuest }) => <QuestLogWindow onOpenPost={onOpenPost} onOpenQuest={onOpenQuest} />,
   },
   {
     id: 'profile',
@@ -174,27 +176,32 @@ const AUTH_ICONS: DesktopIconConfig[] = [
 
 export function getVisibleIcons(isAuthenticated: boolean): DesktopIconConfig[] {
   if (isAuthenticated) {
-    // Logged in: Discord at position 3 (y:2), shift Quests/Profile down
-    const shiftedAuthIcons = AUTH_ICONS.map((icon) => {
-      if (icon.position.y >= 2) {
-        return { ...icon, position: { ...icon.position, y: icon.position.y + 1 } };
-      }
-      return icon;
-    });
+    // Filter out inventory if items feature is disabled
+    const filteredAuthIcons = features.itemsEnabled
+      ? AUTH_ICONS
+      : AUTH_ICONS.filter((icon) => icon.id !== 'inventory');
+
+    // Recalculate positions after filtering
+    const repositionedAuthIcons = filteredAuthIcons.map((icon, index) => ({
+      ...icon,
+      position: { x: 0, y: index },
+    }));
+
+    const authIconCount = repositionedAuthIcons.length;
 
     const discord = PUBLIC_ICONS.find((i) => i.id === 'discord');
     const otherPublicIcons = PUBLIC_ICONS.filter((i) => i.id !== 'discord').map(
       (icon, index) => ({
         ...icon,
-        position: { x: 0, y: 5 + index },
+        position: { x: 0, y: authIconCount + 1 + index },
       })
     );
 
-    const discordAtPosition2 = discord
-      ? [{ ...discord, position: { x: 0, y: 2 } }]
+    const discordAtPosition = discord
+      ? [{ ...discord, position: { x: 0, y: authIconCount } }]
       : [];
 
-    return [...shiftedAuthIcons, ...discordAtPosition2, ...otherPublicIcons];
+    return [...repositionedAuthIcons, ...discordAtPosition, ...otherPublicIcons];
   }
 
   // Guest layout: Journal, Login, SignUp, About, Contact, Discord

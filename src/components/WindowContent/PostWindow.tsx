@@ -9,14 +9,27 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/Toast';
 import './WindowContent.scss';
 
+const PILLAR_COLORS: Record<string, string> = {
+  programming: '#3b82f6',
+  'growth-career': '#a855f7',
+  'saas-journey': '#f97316',
+};
+
+const LEVEL_COLORS: Record<string, string> = {
+  beginner: '#22c55e',
+  intermediate: '#eab308',
+  advanced: '#ef4444',
+};
+
 interface PostWindowProps {
   post: PostResponse;
   onOpenWindow?: (id: string) => void;
+  onOpenQuest?: (questId: string) => void;
   registerCloseHandler?: (handler: () => boolean) => void;
   onForceClose?: () => void;
 }
 
-export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceClose }: PostWindowProps) {
+export function PostWindow({ post, onOpenWindow, onOpenQuest, registerCloseHandler, onForceClose }: PostWindowProps) {
   const { Content, error, isCompiling } = useMDXCompiler(post.content);
   const { isAuthenticated, updateUserStats } = useAuth();
   const { showXPToast, showLevelUpToast } = useToast();
@@ -205,8 +218,21 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
       <article className="post__article">
         <header className="post__header">
           <div className="post__meta">
-            <span className="post__pillar">{post.content_pillar}</span>
-            <span className="post__level">{post.target_level}</span>
+            <span
+              className="post__pillar"
+              style={{ backgroundColor: PILLAR_COLORS[post.content_pillar] || '#3b82f6' }}
+            >
+              {post.content_pillar.replace('-', ' & ')}
+            </span>
+            <span
+              className="post__level"
+              style={{
+                borderColor: LEVEL_COLORS[post.target_level] || '#22c55e',
+                color: LEVEL_COLORS[post.target_level] || '#22c55e',
+              }}
+            >
+              {post.target_level}
+            </span>
             <span className="post__xp">+{post.read_xp} XP</span>
           </div>
           <h1 className="post__title">{post.title}</h1>
@@ -266,6 +292,22 @@ export function PostWindow({ post, onOpenWindow, registerCloseHandler, onForceCl
                 {isClaimLoading ? 'Claiming...' : `Claim +${post.read_xp} XP`}
               </button>
             )}
+          </div>
+        )}
+
+        {/* Quest button - shown when post has an attached quest */}
+        {post.quest_id && (
+          <div className="post__quest-action">
+            <div className="post__quest-prompt">
+              <span className="post__quest-icon">&#9733;</span>
+              <span>This entry has a quest attached!</span>
+            </div>
+            <button
+              className="post__quest-btn"
+              onClick={() => onOpenQuest?.(post.quest_id!)}
+            >
+              Take me to the Quest
+            </button>
           </div>
         )}
       </article>

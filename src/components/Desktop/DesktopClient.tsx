@@ -5,7 +5,7 @@ import DesktopIcon from '../DesktopIcon/DesktopIcon';
 import Navbar from '../Navbar/Navbar';
 import { useWindowManager } from '../Window/WindowContext';
 import { Window } from '../Window/Window';
-import { PostWindow } from '../WindowContent';
+import { PostWindow, QuestWindow } from '../WindowContent';
 import {
   getVisibleIcons,
   getIconPosition,
@@ -74,6 +74,7 @@ export function DesktopClient({
 
   // Forward declaration for handleOpenWindow to use in handleOpenPost
   const handleOpenWindowRef = useRef<(id: string) => void>(() => {});
+  const handleOpenQuestRef = useRef<(questId: string) => void>(() => {});
 
   const handleOpenPost = useCallback(
     async (slug: string) => {
@@ -94,6 +95,7 @@ export function DesktopClient({
           <PostWindow
             post={post}
             onOpenWindow={(id) => handleOpenWindowRef.current(id)}
+            onOpenQuest={(questId) => handleOpenQuestRef.current(questId)}
             registerCloseHandler={(handler) => registerBeforeClose(windowId, handler)}
             onForceClose={() => forceCloseWindow(windowId)}
           />
@@ -103,6 +105,22 @@ export function DesktopClient({
       });
     },
     [openedPosts, openWindow, registerBeforeClose, forceCloseWindow]
+  );
+
+  const handleOpenQuest = useCallback(
+    (questId: string) => {
+      const quest = quests.find((q) => q.quest_id === questId);
+      if (!quest) return;
+
+      const windowId = `quest-${questId}`;
+      openWindow({
+        id: windowId,
+        title: quest.name,
+        component: <QuestWindow quest={quest} />,
+        icon: '/desktop-icons/chest.png',
+      });
+    },
+    [quests, openWindow]
   );
 
   // Track if initial post has been opened to avoid re-opening on re-renders
@@ -121,6 +139,7 @@ export function DesktopClient({
           <PostWindow
             post={initialPost}
             onOpenWindow={(id) => handleOpenWindowRef.current(id)}
+            onOpenQuest={(questId) => handleOpenQuestRef.current(questId)}
             registerCloseHandler={(handler) => registerBeforeClose(windowId, handler)}
             onForceClose={() => forceCloseWindow(windowId)}
           />
@@ -145,6 +164,7 @@ export function DesktopClient({
             items,
             onOpenPost: handleOpenPost,
             onOpenWindow: (id: string) => handleOpenWindowRef.current(id),
+            onOpenQuest: (questId: string) => handleOpenQuestRef.current(questId),
           }),
           icon: icon.icon,
         });
@@ -153,10 +173,11 @@ export function DesktopClient({
     [visibleIcons, posts, quests, items, openWindow, handleOpenPost]
   );
 
-  // Keep ref updated with latest handleOpenWindow
+  // Keep refs updated with latest handlers
   useEffect(() => {
     handleOpenWindowRef.current = handleOpenWindow;
-  }, [handleOpenWindow]);
+    handleOpenQuestRef.current = handleOpenQuest;
+  }, [handleOpenWindow, handleOpenQuest]);
 
   const handleIconDoubleClick = useCallback(
     (icon: DesktopIconConfig) => {
@@ -176,11 +197,12 @@ export function DesktopClient({
           items,
           onOpenPost: handleOpenPost,
           onOpenWindow: handleOpenWindow,
+          onOpenQuest: handleOpenQuest,
         }),
         icon: icon.icon,
       });
     },
-    [posts, quests, items, openWindow, handleOpenPost, handleOpenWindow]
+    [posts, quests, items, openWindow, handleOpenPost, handleOpenWindow, handleOpenQuest]
   );
 
   return (
