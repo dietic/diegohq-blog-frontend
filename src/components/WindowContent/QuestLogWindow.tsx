@@ -1,149 +1,206 @@
 'use client';
 
-import { useState } from 'react';
-import type { QuestResponse } from '@/lib/api/types';
+import { useState, useEffect } from 'react';
+import type { QuestProgressResponse } from '@/lib/api/types';
 import './WindowContent.scss';
 
 interface QuestLogWindowProps {
-  quests: QuestResponse[];
+  onOpenPost?: (slug: string) => void;
+  onOpenQuest?: (questId: string) => void;
 }
 
-const difficultyColors: Record<string, string> = {
-  easy: '#22c55e',
-  medium: '#eab308',
-  hard: '#ef4444',
+const TYPE_COLORS: Record<string, string> = {
+  code: '#8b5cf6',
+  'multiple-choice': '#3b82f6',
 };
 
-export function QuestLogWindow({ quests }: QuestLogWindowProps) {
-  const [selectedQuest, setSelectedQuest] = useState<QuestResponse | null>(null);
-  const [answer, setAnswer] = useState('');
-  const [result, setResult] = useState<'correct' | 'incorrect' | null>(null);
+function formatDate(dateString: string | null): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+  });
+}
 
-  const handleSubmit = () => {
-    if (!selectedQuest) return;
+function formatTime(dateString: string | null): string {
+  if (!dateString) return '';
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
 
-    if (selectedQuest.correct_answer) {
-      const isCorrect =
-        answer.toLowerCase().trim() ===
-        selectedQuest.correct_answer.toLowerCase().trim();
-      setResult(isCorrect ? 'correct' : 'incorrect');
-    } else {
-      // Call-to-action quests are always "correct"
-      setResult('correct');
+export function QuestLogWindow({ onOpenPost, onOpenQuest }: QuestLogWindowProps) {
+  const [quests, setQuests] = useState<QuestProgressResponse[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchQuestProgress() {
+      try {
+        const res = await fetch('/api/quests/progress?include_in_progress=true');
+        if (!res.ok) {
+          if (res.status === 401) {
+            setError('Log in to view your quest history');
+          } else {
+            setError('Failed to load quest history');
+          }
+          return;
+        }
+        const data = await res.json();
+        setQuests(data);
+      } catch (err) {
+        setError('Failed to load quest history');
+      } finally {
+        setLoading(false);
+      }
     }
-  };
 
-  const handleSelectQuest = (quest: QuestResponse) => {
-    setSelectedQuest(quest);
-    setAnswer('');
-    setResult(null);
-  };
+    fetchQuestProgress();
+  }, []);
+
+  const inProgressQuests = quests.filter((q) => q.inProgress);
+  const completedQuests = quests.filter((q) => q.completed);
+  const totalXpEarned = completedQuests.reduce((sum, q) => sum + q.xpEarned, 0);
+
+  if (loading) {
+    return (
+      <div className="window-content quest-log">
+        <div className="quest-log__loading">Loading quest history...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="window-content quest-log">
+        <div className="quest-log__empty">
+          <p>{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="window-content quest-log">
-      <div className="quest-log__header">
-        <h2 className="quest-log__title">Quest Log</h2>
+      {/* Stats Bar */}
+      <div className="quest-log__stats-bar">
+        <div className="quest-log__stat-item">
+          <span className="quest-log__stat-value quest-log__stat-value--progress">
+            {inProgressQuests.length}
+          </span>
+          <span className="quest-log__stat-label">Active</span>
+        </div>
+        <div className="quest-log__stat-item">
+          <span className="quest-log__stat-value quest-log__stat-value--completed">
+            {completedQuests.length}
+          </span>
+          <span className="quest-log__stat-label">Completed</span>
+        </div>
+        <div className="quest-log__stat-item">
+          <span className="quest-log__stat-value quest-log__stat-value--xp">
+            {totalXpEarned}
+          </span>
+          <span className="quest-log__stat-label">XP Earned</span>
+        </div>
       </div>
 
-      <div className={`quest-log__container ${selectedQuest ? 'quest-log__container--with-details' : ''}`}>
-        <div className="quest-log__list">
-          {quests.length > 0 ? (
-            quests.map((quest) => (
-              <div
-                key={quest.quest_id}
-                className={`quest-log__item ${selectedQuest?.quest_id === quest.quest_id ? 'selected' : ''}`}
-                onClick={() => handleSelectQuest(quest)}
-              >
-                <div className="quest-log__item-header">
-                  <span className="quest-log__item-name">{quest.name}</span>
-                  <span
-                    className="quest-log__item-difficulty"
-                    style={{ color: difficultyColors[quest.difficulty] }}
-                  >
-                    {quest.difficulty}
-                  </span>
-                </div>
-                <div className="quest-log__item-meta">
-                  <span className="quest-log__item-type">{quest.quest_type}</span>
-                  <span className="quest-log__item-xp">+{quest.xp_reward} XP</span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="quest-log__empty">
-              <p>No quests available.</p>
-            </div>
-          )}
-        </div>
-
-        {selectedQuest && (
-          <div className="quest-log__details">
-            <h3 className="quest-log__details-name">{selectedQuest.name}</h3>
-            <p className="quest-log__details-desc">{selectedQuest.description}</p>
-
-            <div className="quest-log__prompt">
-              <p>{selectedQuest.prompt}</p>
-            </div>
-
-            {selectedQuest.quest_type === 'multiple-choice' &&
-              selectedQuest.options && (
-                <div className="quest-log__options">
-                  {selectedQuest.options.map((option, idx) => (
-                    <button
-                      key={idx}
-                      className={`quest-log__option ${answer === option ? 'selected' : ''}`}
-                      onClick={() => setAnswer(option)}
-                      disabled={result !== null}
+      {/* Content */}
+      <div className="quest-log__content">
+        {quests.length === 0 ? (
+          <div className="quest-log__empty">
+            <div className="quest-log__empty-icon">&#9733;</div>
+            <p>No quests yet</p>
+            <p className="quest-log__empty-hint">
+              Complete quests in journal entries to track your progress!
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* In Progress Section */}
+            {inProgressQuests.length > 0 && (
+              <div className="quest-log__section">
+                <h3 className="quest-log__section-title">Active Quests</h3>
+                <div className="quest-log__list">
+                  {inProgressQuests.map((quest) => (
+                    <div
+                      key={quest.questId}
+                      className="quest-log__card quest-log__card--active"
+                      onClick={() => onOpenQuest?.(quest.questId)}
                     >
-                      {option}
-                    </button>
+                      <div className="quest-log__card-main">
+                        <div className="quest-log__card-info">
+                          <span
+                            className="quest-log__card-type"
+                            style={{ backgroundColor: TYPE_COLORS[quest.questType] || '#8b5cf6' }}
+                          >
+                            {quest.questType === 'code' ? 'Code' : 'Quiz'}
+                          </span>
+                          <h4 className="quest-log__card-name">{quest.questName}</h4>
+                        </div>
+                        <div className="quest-log__card-reward">
+                          <span className="quest-log__card-xp">{quest.xpReward} XP</span>
+                        </div>
+                      </div>
+                      <div className="quest-log__card-footer">
+                        <span className="quest-log__card-date">
+                          Started {formatDate(quest.startedAt)}
+                        </span>
+                        <span className="quest-log__card-action">
+                          Continue &#8250;
+                        </span>
+                      </div>
+                    </div>
                   ))}
                 </div>
-              )}
-
-            {selectedQuest.quest_type === 'text-input' && (
-              <input
-                type="text"
-                className="quest-log__input"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                placeholder="Enter your answer..."
-                disabled={result !== null}
-              />
-            )}
-
-            {result && (
-              <div
-                className={`quest-log__result ${result === 'correct' ? 'success' : 'error'}`}
-              >
-                {result === 'correct' ? (
-                  <>
-                    <span>Quest Complete!</span>
-                    <span>+{selectedQuest.xp_reward} XP</span>
-                    {selectedQuest.item_reward && (
-                      <span>Received: {selectedQuest.item_reward}</span>
-                    )}
-                  </>
-                ) : (
-                  <span>Incorrect. Try again!</span>
-                )}
               </div>
             )}
 
-            {result !== 'correct' && (
-              <button
-                className="quest-log__submit"
-                onClick={handleSubmit}
-                disabled={
-                  !answer && selectedQuest.quest_type !== 'call-to-action'
-                }
-              >
-                {selectedQuest.quest_type === 'call-to-action'
-                  ? 'Complete Quest'
-                  : 'Submit Answer'}
-              </button>
+            {/* Completed Section */}
+            {completedQuests.length > 0 && (
+              <div className="quest-log__section">
+                <h3 className="quest-log__section-title">Completed</h3>
+                <div className="quest-log__list">
+                  {completedQuests.map((quest) => (
+                    <div
+                      key={quest.questId}
+                      className="quest-log__card quest-log__card--completed"
+                    >
+                      <div className="quest-log__card-main">
+                        <div className="quest-log__card-info">
+                          <span className="quest-log__card-check">&#10003;</span>
+                          <h4 className="quest-log__card-name">{quest.questName}</h4>
+                        </div>
+                        <div className="quest-log__card-reward">
+                          <span className="quest-log__card-xp quest-log__card-xp--earned">
+                            +{quest.xpEarned} XP
+                          </span>
+                        </div>
+                      </div>
+                      <div className="quest-log__card-footer">
+                        <span className="quest-log__card-date">
+                          {formatDate(quest.completedAt)} at {formatTime(quest.completedAt)}
+                        </span>
+                        {quest.hostPostTitle && (
+                          <button
+                            className="quest-log__card-link"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onOpenPost?.(quest.hostPostSlug);
+                            }}
+                          >
+                            View Post
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>
