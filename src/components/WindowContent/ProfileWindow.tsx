@@ -12,17 +12,33 @@ interface UserData {
   avatar_url: string | null;
 }
 
-// XP required for each level (simple formula: level * 100)
+/**
+ * Calculate cumulative XP required to reach a specific level.
+ * XP per level = (level - 1)^1.5 * 100, so:
+ * - Level 1→2: 100 XP
+ * - Level 2→3: 282 XP
+ * - Level 3→4: 519 XP
+ * - ...grows exponentially
+ */
 function getXpForLevel(level: number): number {
-  return level * 100;
+  if (level <= 1) return 0;
+  let total = 0;
+  for (let n = 1; n < level; n++) {
+    total += Math.floor(Math.pow(n, 1.5) * 100);
+  }
+  return total;
 }
 
-function getXpProgress(xp: number, level: number): number {
-  const currentLevelXp = getXpForLevel(level - 1);
-  const nextLevelXp = getXpForLevel(level);
+/**
+ * Calculate progress percentage toward next level.
+ */
+function getXpProgress(xp: number, level: number): { progress: number; current: number; needed: number } {
+  const currentLevelXp = getXpForLevel(level);
+  const nextLevelXp = getXpForLevel(level + 1);
   const xpIntoLevel = xp - currentLevelXp;
   const xpNeeded = nextLevelXp - currentLevelXp;
-  return Math.min(100, Math.max(0, (xpIntoLevel / xpNeeded) * 100));
+  const progress = Math.min(100, Math.max(0, (xpIntoLevel / xpNeeded) * 100));
+  return { progress, current: xpIntoLevel, needed: xpNeeded };
 }
 
 export function ProfileWindow() {
@@ -70,8 +86,7 @@ export function ProfileWindow() {
     );
   }
 
-  const xpProgress = getXpProgress(user.xp, user.level);
-  const xpForNextLevel = getXpForLevel(user.level);
+  const { progress, current, needed } = getXpProgress(user.xp, user.level);
 
   return (
     <div className="profile-window">
@@ -97,11 +112,11 @@ export function ProfileWindow() {
           <div className="profile-window__xp-bar">
             <div
               className="profile-window__xp-fill"
-              style={{ width: `${xpProgress}%` }}
+              style={{ width: `${progress}%` }}
             />
           </div>
           <div className="profile-window__xp-text">
-            {user.xp} / {xpForNextLevel} XP
+            {current} / {needed} XP
           </div>
         </div>
 

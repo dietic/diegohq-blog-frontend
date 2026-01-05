@@ -16,20 +16,32 @@ import {
   User,
 } from 'lucide-react';
 import { logout } from '@/lib/auth/actions';
+import { features } from '@/config/features';
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
+  featureFlag?: keyof typeof features;
 }
 
 const navItems: NavItem[] = [
   { href: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
   { href: '/admin/posts', label: 'Posts', icon: <FileText size={20} /> },
   { href: '/admin/quests', label: 'Quests', icon: <Swords size={20} /> },
-  { href: '/admin/items', label: 'Items', icon: <Package size={20} /> },
+  { href: '/admin/items', label: 'Items', icon: <Package size={20} />, featureFlag: 'itemsEnabled' },
   { href: '/admin/contacts', label: 'Contacts', icon: <Mail size={20} /> },
 ];
+
+// Filter nav items based on feature flags
+const getVisibleNavItems = () => {
+  return navItems.filter((item) => {
+    if (item.featureFlag) {
+      return features[item.featureFlag];
+    }
+    return true;
+  });
+};
 
 interface AdminSidebarProps {
   username: string;
@@ -67,7 +79,7 @@ export const AdminSidebar = ({ username }: AdminSidebarProps) => {
       </div>
 
       <nav className="admin-sidebar__nav">
-        {navItems.map((item) => (
+        {getVisibleNavItems().map((item) => (
           <Link
             key={item.href}
             href={item.href}

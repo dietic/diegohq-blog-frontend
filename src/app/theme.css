@@ -12,7 +12,7 @@
 
   /* === WINDOW COLORS === */
   --window-primary-bg: #1a1a2e;
-  --window-primary-border: #3f3f46;
+  --window-primary-border: #7b7b89;
   --window-primary-header: oklch(0.3739 0.0599 264.04);
   --window-primary-header-foreground: #e4e4e7;
   --window-primary-action-bg: oklch(0.5252 0.0599 264.04);
