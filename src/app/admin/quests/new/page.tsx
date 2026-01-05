@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createQuest } from '@/lib/api/services/quests';
 import type { QuestCreate, QuestType, QuestDifficulty } from '@/lib/api/types';
+import { features } from '@/config/features';
 
 const questTypes: QuestType[] = [
   'multiple-choice',
-  'text-input',
-  'call-to-action',
+  'code',
 ];
 const difficulties: QuestDifficulty[] = ['easy', 'medium', 'hard'];
 
@@ -28,7 +28,6 @@ export const NewQuestPage = () => {
     correctAnswer: '',
     xpReward: 30,
     itemReward: '',
-    hostPostSlug: '',
     difficulty: 'easy' as QuestDifficulty,
   });
 
@@ -65,7 +64,6 @@ export const NewQuestPage = () => {
         correct_answer: formData.correctAnswer || null,
         xp_reward: formData.xpReward,
         item_reward: formData.itemReward || null,
-        host_post_slug: formData.hostPostSlug,
         difficulty: formData.difficulty,
       };
 
@@ -140,23 +138,6 @@ export const NewQuestPage = () => {
           />
         </div>
 
-        <div className="form__group">
-          <label className="form__label">Host Post Slug *</label>
-          <input
-            type="text"
-            className="input"
-            value={formData.hostPostSlug}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, hostPostSlug: e.target.value }))
-            }
-            placeholder="intro-to-git"
-            required
-          />
-          <p className="form__hint">
-            The slug of the post where this quest appears
-          </p>
-        </div>
-
         <div className="form__row">
           <div className="form__group">
             <label className="form__label">Type *</label>
@@ -227,8 +208,7 @@ export const NewQuestPage = () => {
           </div>
         )}
 
-        {(formData.type === 'multiple-choice' ||
-          formData.type === 'text-input') && (
+        {formData.type === 'multiple-choice' && (
           <div className="form__group">
             <label className="form__label">Correct Answer</label>
             <input
@@ -264,18 +244,20 @@ export const NewQuestPage = () => {
             />
           </div>
 
-          <div className="form__group">
-            <label className="form__label">Item Reward</label>
-            <input
-              type="text"
-              className="input"
-              value={formData.itemReward}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, itemReward: e.target.value }))
-              }
-              placeholder="item-id"
-            />
-          </div>
+          {features.itemsEnabled && (
+            <div className="form__group">
+              <label className="form__label">Item Reward</label>
+              <input
+                type="text"
+                className="input"
+                value={formData.itemReward}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, itemReward: e.target.value }))
+                }
+                placeholder="item-id"
+              />
+            </div>
+          )}
         </div>
 
         <div className="form__actions">

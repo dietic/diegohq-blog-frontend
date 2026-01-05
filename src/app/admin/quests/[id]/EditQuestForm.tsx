@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { updateQuest, deleteQuest } from '@/lib/api/services/quests';
 import type { QuestResponse, QuestUpdate, QuestType, QuestDifficulty } from '@/lib/api/types';
+import { features } from '@/config/features';
 
 const questTypes: QuestType[] = [
   'multiple-choice',
-  'text-input',
-  'call-to-action',
+  'code',
 ];
 const difficulties: QuestDifficulty[] = ['easy', 'medium', 'hard'];
 
@@ -32,7 +32,6 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
     correct_answer: quest.correct_answer || '',
     xp_reward: quest.xp_reward,
     item_reward: quest.item_reward || '',
-    host_post_slug: quest.host_post_slug,
     difficulty: quest.difficulty as QuestDifficulty,
   });
 
@@ -60,7 +59,6 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
         correct_answer: formData.correct_answer || undefined,
         xp_reward: formData.xp_reward,
         item_reward: formData.item_reward || null,
-        host_post_slug: formData.host_post_slug,
         difficulty: formData.difficulty,
       };
 
@@ -120,19 +118,6 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
               setFormData((prev) => ({ ...prev, description: e.target.value }))
             }
             maxLength={500}
-            required
-          />
-        </div>
-
-        <div className="form__group">
-          <label className="form__label">Host Post Slug *</label>
-          <input
-            type="text"
-            className="input"
-            value={formData.host_post_slug}
-            onChange={(e) =>
-              setFormData((prev) => ({ ...prev, host_post_slug: e.target.value }))
-            }
             required
           />
         </div>
@@ -205,8 +190,7 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
           </div>
         )}
 
-        {(formData.quest_type === 'multiple-choice' ||
-          formData.quest_type === 'text-input') && (
+        {formData.quest_type === 'multiple-choice' && (
           <div className="form__group">
             <label className="form__label">Correct Answer</label>
             <input
@@ -241,17 +225,19 @@ export const EditQuestForm = ({ quest }: EditQuestFormProps) => {
             />
           </div>
 
-          <div className="form__group">
-            <label className="form__label">Item Reward</label>
-            <input
-              type="text"
-              className="input"
-              value={formData.item_reward}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, item_reward: e.target.value }))
-              }
-            />
-          </div>
+          {features.itemsEnabled && (
+            <div className="form__group">
+              <label className="form__label">Item Reward</label>
+              <input
+                type="text"
+                className="input"
+                value={formData.item_reward}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, item_reward: e.target.value }))
+                }
+              />
+            </div>
+          )}
         </div>
 
         <div className="form__actions">

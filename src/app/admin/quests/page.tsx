@@ -34,7 +34,6 @@ export const QuestsPage = async () => {
               <th>Difficulty</th>
               <th>XP Reward</th>
               <th>Item Reward</th>
-              <th>Host Post</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -74,14 +73,6 @@ export const QuestsPage = async () => {
                 <td>{quest.xp_reward} XP</td>
                 <td style={{ color: quest.item_reward ? '#e4e4e7' : '#52525b' }}>
                   {quest.item_reward || '—'}
-                </td>
-                <td>
-                  <Link
-                    href={`/admin/posts/${quest.host_post_slug}`}
-                    style={{ color: '#3b82f6', textDecoration: 'none' }}
-                  >
-                    {quest.host_post_slug}
-                  </Link>
                 </td>
                 <td>
                   <div className="data-table__actions">

@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { updatePost, deletePost } from '@/lib/api/services/posts';
 import { MDXPreviewClient } from '@/components/mdx/MDXPreviewClient';
+import { QuestSelect } from '@/app/admin/components/QuestSelect';
 import type { PostResponse, PostUpdate, ContentPillar, TargetLevel } from '@/lib/api/types';
+import { features } from '@/config/features';
 
 interface EditPostFormProps {
   post: PostResponse;
@@ -245,35 +247,34 @@ export const EditPostForm = ({ post }: EditPostFormProps) => {
             </div>
 
             <div className="grid grid--4">
-              <div className="form__group">
-                <label className="form__label">Required Item</label>
-                <input
-                  type="text"
-                  className="input"
-                  value={formData.required_item}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      required_item: e.target.value,
-                    }))
-                  }
-                  placeholder="item-id"
-                />
-              </div>
+              {features.itemsEnabled && (
+                <div className="form__group">
+                  <label className="form__label">Required Item</label>
+                  <input
+                    type="text"
+                    className="input"
+                    value={formData.required_item}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        required_item: e.target.value,
+                      }))
+                    }
+                    placeholder="item-id"
+                  />
+                </div>
+              )}
 
               <div className="form__group">
-                <label className="form__label">Quest ID</label>
-                <input
-                  type="text"
-                  className="input"
+                <label className="form__label">Quest</label>
+                <QuestSelect
                   value={formData.quest_id}
-                  onChange={(e) =>
+                  onChange={(value) =>
                     setFormData((prev) => ({
                       ...prev,
-                      quest_id: e.target.value,
+                      quest_id: value,
                     }))
                   }
-                  placeholder="quest-id"
                 />
               </div>
 
